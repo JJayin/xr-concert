@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>XR Concert_Unreal Engine Project</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;500;800&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-color:#050505;
+      --surface: rgba(255,255,255,0.04);
+      --muted: #9da6b2;
+      --text-main:#ffffff;
+      --accent-acid:#CCFF00;
+      --accent-red:#ff3b3b;
+      --glass-bg: rgba(255,255,255,0.03);
+      --font-head: 'Archivo Black', sans-serif;
+      --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans KR';
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;background:transparent;color:var(--text-main);font-family:var(--font-ui);-webkit-font-smoothing:antialiased}
+
+    /* Page container + layout */
+    .container{width:100%;max-width:1200px;margin:0 auto;padding:0 20px}
+    .section-padding{padding:100px 0}
+
+    /* Background video */
+    body{
+      position:relative; overflow-x:hidden;
+      background:#050505; /* Fallback color if video fails to load */
+    }
+    .bg-video{
+      position:fixed; top:0; left:0; width:100vw; height:100vh;
+      min-width:100%; min-height:100%;
+      object-fit:cover; z-index:-3; pointer-events:none;
+      background:#050505; /* Fallback color */
+    }
+    /* Ensure video is behind everything */
+    .orb-container{position:fixed;inset:0;z-index:-1;pointer-events:none}
+
+    /* Top navigation removed per user request */
+
+    /* Hero */
+    .hero{min-height:80vh;display:grid;align-items:center;place-items:center;padding:120px 20px}
+    .hero-inner{display:grid;grid-template-columns:1fr 420px;gap:48px;align-items:center;width:100%;max-width:1200px}
+    .hero-title{font-family:var(--font-head);font-size:clamp(3rem,9vw,6rem);line-height:0.92;text-transform:uppercase;color:var(--text-main);margin:0 0 8px 0;text-align:center;position:relative}
+    .hero-title-inner{position:relative;display:inline-block;padding:0 6px}
+    .hero-title-inner::before,
+    .hero-title-inner::after{
+      content:attr(data-text);
+      position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none;
+      -webkit-backface-visibility:hidden;backface-visibility:hidden;
+    }
+    .hero-title-inner::before{color:var(--accent-acid);z-index:1;mix-blend-mode:screen;transform:translate3d(-4px,0,0);opacity:0.9;}
+    .hero-title-inner::after{color:var(--accent-red);z-index:1;mix-blend-mode:screen;transform:translate3d(4px,0,0);opacity:0.9}
+    .hero-title-inner{z-index:2}
+    /* subtle randomized glitch timing */
+    @keyframes glitchA{0%{transform:none}10%{transform:translate3d(-2px,-1px,0)}20%{transform:translate3d(2px,1px,0)}30%{transform:none}40%{transform:translate3d(-1px,2px,0)}50%{transform:none}100%{transform:none}}
+    @keyframes glitchB{0%{transform:none}8%{transform:translate3d(2px,1px,0)}18%{transform:translate3d(-2px,-1px,0)}28%{transform:none}45%{transform:translate3d(1px,-2px,0)}100%{transform:none}}
+    .hero-title-inner::before{animation:glitchA 2.8s infinite linear}
+    .hero-title-inner::after{animation:glitchB 3.2s infinite linear}
+
+    .hero-subtitle{display:block;font-family:'Press Start 2P', monospace;font-size:clamp(0.6rem,1.6vw,0.95rem);font-weight:400;color:var(--text-main);text-transform:none;margin:8px auto 0 auto;background:rgba(0,0,0,0.9);padding:10px 14px;border-radius:6px;line-height:1;text-align:center;max-width:min(88%,520px)}
+    .hero-copy{color:var(--muted);font-size:1.05rem}
+
+    /* Decorative orbs */
+    .orb-container{position:fixed;inset:0;z-index:-1;pointer-events:none}
+    .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.55}
+    .orb-1{top:10%;left:8%;width:360px;height:360px;background:radial-gradient(circle,var(--accent-acid),transparent 70%)}
+    .orb-2{bottom:8%;right:6%;width:520px;height:520px;background:radial-gradient(circle,#4b0082,transparent 70%)}
+    .orb-3{top:62%;left:52%;width:220px;height:220px;background:radial-gradient(circle,#001f3f,transparent 70%)}
+
+    /* subtle reveal animations */
+    .reveal{opacity:0;transform:translateY(24px) scale(.995);transition:opacity .7s cubic-bezier(.2,.9,.2,1),transform .7s cubic-bezier(.2,.9,.2,1)}
+    .reveal.visible{opacity:1;transform:none}
+
+    /* Manifesto highlighted sentence (scroll-to-focus -> presentation) */
+    .manifesto-line{display:block;margin:14px auto;max-width:880px;font-weight:700;transition:transform .6s cubic-bezier(.2,.9,.2,1),font-size .6s,color .4s,opacity .6s;opacity:0.95;font-size:1.05rem;cursor:pointer}
+    .manifesto-line.focus{font-size:clamp(1.8rem,6vw,3.8rem);color:var(--accent-acid);transform:translateY(-8px);text-shadow:0 8px 30px rgba(0,0,0,0.6);opacity:1}
+
+    /* Presentation overlay when manifesto is clicked */
+    .present-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,2,2,0.92);z-index:3000;opacity:0;pointer-events:none;transition:opacity .28s ease}
+    .present-overlay.open{opacity:1;pointer-events:auto}
+    .present-spotlight{position:absolute;inset:0;background:radial-gradient(circle at 50% 40%, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 15%, transparent 40%);pointer-events:none;mix-blend-mode:overlay}
+    .manifesto-present-wrap{position:relative;max-width:1100px;padding:36px 48px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+    .manifesto-present-text{color:var(--accent-acid);font-weight:800;font-family:var(--font-head);font-size:clamp(2rem,7vw,5rem);line-height:1;text-align:center;padding:8px;transform:translateY(8px) scale(.98);opacity:0;transition:transform .36s cubic-bezier(.2,.9,.2,1),opacity .36s}
+    /* Purpose content style */
+    .purpose-content-wrap{position:relative;max-width:900px;padding:60px 48px;border-radius:24px;max-height:85vh;overflow-y:auto;transform:translateY(20px);opacity:0;transition:transform .4s cubic-bezier(.2,.9,.2,1),opacity .4s,background .3s ease,backdrop-filter .3s ease,border-color .3s ease,box-shadow .3s ease;display:none;
+      /* Glassmorphism effect - more transparent */
+      background:rgba(255,255,255,0.02);
+      backdrop-filter:blur(20px) saturate(180%);
+      -webkit-backdrop-filter:blur(20px) saturate(180%);
+      border:1px solid rgba(255,255,255,0.08);
+      box-shadow:0 8px 32px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .present-overlay.open .purpose-content-wrap{transform:none;opacity:1;display:block}
+    .purpose-content-wrap:hover{background:rgba(255,255,255,0.04);
+      backdrop-filter:blur(25px) saturate(200%) brightness(1.1);
+      -webkit-backdrop-filter:blur(25px) saturate(200%) brightness(1.1);
+      border-color:rgba(255,255,255,0.15);
+      box-shadow:0 12px 40px rgba(0,0,0,0.15),inset 0 2px 8px rgba(255,255,255,0.2),inset 0 -1px 0 rgba(255,255,255,0.1);
+    }
+    .purpose-title{font-family:var(--font-head);font-size:clamp(3rem,7vw,5rem);color:var(--accent-acid);margin-bottom:40px;text-align:center;text-transform:uppercase;letter-spacing:2px;text-shadow:0 0 30px rgba(204,255,0,0.4);opacity:0;transform:translateY(30px) scale(0.95);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
+    .purpose-content-wrap.scrolled .purpose-title{opacity:1;transform:none}
+    .purpose-content{font-family:var(--font-ui);font-size:clamp(1.2rem,2.2vw,1.6rem);line-height:2;color:var(--text-main);text-align:left}
+    .purpose-content p{margin-bottom:28px;opacity:0.95;opacity:0;transform:translateX(-20px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.9,.2,1)}
+    .purpose-content p.visible{opacity:0.95;transform:translateX(0)}
+    .purpose-content p:first-of-type{font-size:clamp(1.4rem,2.5vw,1.8rem);font-weight:500;margin-bottom:40px}
+    .purpose-quote{background:rgba(204,255,0,0.03);border-left:2px solid rgba(204,255,0,0.3);padding:28px 36px;margin:36px 0;border-radius:16px;font-size:clamp(1.4rem,2.5vw,1.8rem);font-weight:600;color:var(--accent-acid);font-style:italic;text-align:center;position:relative;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1),background .3s ease,backdrop-filter .3s ease,border-color .3s ease,box-shadow .3s ease;
+      /* Glassmorphism for quote */
+      backdrop-filter:blur(10px) saturate(150%);
+      -webkit-backdrop-filter:blur(10px) saturate(150%);
+      border:1px solid rgba(204,255,0,0.15);
+      box-shadow:0 4px 16px rgba(0,0,0,0.05),inset 0 1px 0 rgba(204,255,0,0.1);
+    }
+    .purpose-quote.visible{opacity:1;transform:translateY(0)}
+    .purpose-quote::before{content:'"';position:absolute;left:20px;top:12px;font-size:2.5rem;opacity:0.15;font-family:serif}
+    .purpose-quote::after{content:'';position:absolute;inset:0;border-radius:16px;background:linear-gradient(135deg,rgba(204,255,0,0.15) 0%,rgba(204,255,0,0.05) 50%,transparent 100%);opacity:0;transition:opacity .3s ease;pointer-events:none;z-index:-1}
+    .purpose-quote:hover{background:rgba(204,255,0,0.06);
+      backdrop-filter:blur(15px) saturate(180%) brightness(1.15);
+      -webkit-backdrop-filter:blur(15px) saturate(180%) brightness(1.15);
+      border-color:rgba(204,255,0,0.4);
+      box-shadow:0 6px 24px rgba(204,255,0,0.2),inset 0 2px 6px rgba(204,255,0,0.25),inset 0 -1px 0 rgba(204,255,0,0.1);
+    }
+    .purpose-quote:hover::after{opacity:1}
+    .purpose-content strong{color:var(--accent-acid);font-weight:700;opacity:0;transform:scale(0.8);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.9,.2,1)}
+    .purpose-content p.visible strong{opacity:1;transform:scale(1);animation:highlight 0.6s ease}
+    @keyframes highlight{0%{text-shadow:0 0 0 rgba(204,255,0,0)}50%{text-shadow:0 0 20px rgba(204,255,0,0.8)}100%{text-shadow:0 0 0 rgba(204,255,0,0)}}
+    .purpose-section{margin-top:40px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.06);opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
+    .purpose-section.visible{opacity:1;transform:translateY(0)}
+    .purpose-section-title{font-size:clamp(1.6rem,3vw,2rem);color:var(--accent-acid);margin-bottom:24px;font-weight:700;opacity:0;transform:translateX(-30px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.9,.2,1)}
+    .purpose-section.visible .purpose-section-title{opacity:1;transform:translateX(0);animation:slide-in-accent 0.8s ease}
+    @keyframes slide-in-accent{0%{transform:translateX(-30px);opacity:0}60%{transform:translateX(10px)}100%{transform:translateX(0);opacity:1}}
+    .purpose-content::-webkit-scrollbar{width:8px}
+    .purpose-content::-webkit-scrollbar-track{background:rgba(255,255,255,0.02);border-radius:4px}
+    .purpose-content::-webkit-scrollbar-thumb{background:rgba(204,255,0,0.3);border-radius:4px}
+    .purpose-content::-webkit-scrollbar-thumb:hover{background:rgba(204,255,0,0.5)}
+    /* Levels content - card grid style */
+    .levels-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:32px;margin-top:40px;opacity:0;transform:translateY(30px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
+    .levels-grid.visible{opacity:1;transform:translateY(0)}
+    .level-content-card{background:rgba(255,255,255,0.02);backdrop-filter:blur(15px) saturate(150%);-webkit-backdrop-filter:blur(15px) saturate(150%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;overflow:hidden;transform-style:preserve-3d;transition:all .4s ease;opacity:0;transform:translateY(20px) scale(0.98);position:relative;cursor:pointer;perspective:1000px}
+    .level-content-card.visible{opacity:1;transform:translateY(0) scale(1)}
+    .level-content-card{--spotlight-x: 50%; --spotlight-y: 50%;}
+    .level-content-card::before{content:'';position:absolute;left:var(--spotlight-x);top:var(--spotlight-y);transform:translate(-50%,-50%);width:0;height:0;border-radius:50%;background:radial-gradient(circle, rgba(255,255,220,0.85) 0%, rgba(255,255,220,0.35) 25%, rgba(255,255,220,0.1) 40%, transparent 70%);filter:blur(45px);opacity:0;transition:width .5s cubic-bezier(.2,.9,.2,1),height .5s cubic-bezier(.2,.9,.2,1),opacity .4s ease,left .15s ease,top .15s ease;pointer-events:none;z-index:1}
+    .level-content-card:hover::before{width:450px;height:450px;opacity:1}
+    .level-content-card:hover{background:rgba(255,255,255,0.04);border-color:rgba(204,255,0,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.2),inset 0 1px 0 rgba(255,255,255,0.1)}
+    .level-content-card:hover .level-content-title{color:var(--accent-acid);text-shadow:0 0 25px rgba(204,255,0,0.7),0 0 50px rgba(204,255,0,0.4),0 0 75px rgba(204,255,0,0.2)}
+    /* Level media modal */
+    .level-media-modal{position:fixed;inset:0;background:rgba(2,2,2,0.95);z-index:4000;opacity:0;pointer-events:none;transition:opacity .3s ease;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+    .level-media-modal.open{opacity:1;pointer-events:auto}
+    .level-media-content{position:relative;max-width:90vw;max-height:90vh;border-radius:20px;overflow:hidden;transform:scale(0.9);transition:transform .3s ease;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+    .level-media-modal.open .level-media-content{transform:scale(1)}
+    .level-media-close{position:absolute;right:20px;top:20px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.2);color:#fff;padding:12px 16px;border-radius:10px;cursor:pointer;z-index:10;font-size:1.2rem;transition:all .3s ease}
+    .level-media-close:hover{background:rgba(204,255,0,0.2);border-color:var(--accent-acid);color:var(--accent-acid)}
+    .level-media-img,.level-media-video{width:100%;height:auto;max-height:90vh;object-fit:contain;display:block}
+    .level-media-video{background:#000}
+    .level-content-img-box{width:100%;height:clamp(200px,25vh,280px);background:linear-gradient(135deg,rgba(204,255,0,0.1),rgba(0,0,0,0.3));overflow:hidden;position:relative}
+    .level-content-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease;opacity:0.8}
+    .level-content-card:hover .level-content-img{transform:scale(1.1);opacity:1}
+    .level-content-info{padding:28px}
+    .level-content-title{font-family:var(--font-head);font-size:clamp(1.8rem,3.5vw,2.5rem);color:var(--accent-acid);margin-bottom:16px;text-transform:uppercase;letter-spacing:1px}
+    .level-content-desc{font-family:var(--font-ui);font-size:clamp(1rem,1.8vw,1.2rem);line-height:1.8;color:var(--text-main);opacity:0.9}
+    @media (max-width:980px){
+      .levels-grid{grid-template-columns:1fr;gap:24px}
+    }
+    /* Next TOC button - same style as TOC items */
+    .purpose-next-btn{font-family:var(--font-head);color:var(--text-main);font-size:clamp(2rem,5vw,4.5rem);position:relative;cursor:pointer;padding:24px 48px;border-radius:16px;z-index:1;transform-style:preserve-3d;text-align:center;width:100%;margin-top:60px;opacity:0;transform:translateY(20px) scale(.992);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.2,1),color .3s ease,text-shadow .3s ease,filter .4s ease,background .3s ease,backdrop-filter .3s ease,border-color .3s ease,box-shadow .3s ease;
+      /* Glassmorphism effect */
+      background:rgba(255,255,255,0.03);
+      backdrop-filter:blur(15px) saturate(150%);
+      -webkit-backdrop-filter:blur(15px) saturate(150%);
+      border:1px solid rgba(255,255,255,0.1);
+      box-shadow:0 4px 20px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .purpose-next-btn.visible{opacity:1;transform:none}
+    .purpose-next-btn{--spotlight-x: 50%; --spotlight-y: 50%;}
+    .purpose-next-btn::before{content:'';position:absolute;left:var(--spotlight-x);top:var(--spotlight-y);transform:translate(-50%,-50%);width:0;height:0;border-radius:50%;background:radial-gradient(circle, rgba(255,255,220,0.85) 0%, rgba(255,255,220,0.35) 25%, rgba(255,255,220,0.1) 40%, transparent 70%);filter:blur(45px);opacity:0;transition:width .5s cubic-bezier(.2,.9,.2,1),height .5s cubic-bezier(.2,.9,.2,1),opacity .4s ease,left .15s ease,top .15s ease;pointer-events:none;z-index:-1}
+    .purpose-next-btn:hover::before{width:450px;height:450px;opacity:1}
+    .purpose-next-btn::after{content:'';position:absolute;inset:0;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0.05) 50%,transparent 100%);opacity:0;transition:opacity .3s ease;pointer-events:none;z-index:0}
+    .purpose-next-btn:hover::after{opacity:1}
+    .purpose-next-btn:hover{color:var(--accent-acid);text-shadow:0 0 25px rgba(204,255,0,0.7),0 0 50px rgba(204,255,0,0.4),0 0 75px rgba(204,255,0,0.2);
+      background:rgba(255,255,255,0.08);
+      backdrop-filter:blur(20px) saturate(200%) brightness(1.2);
+      -webkit-backdrop-filter:blur(20px) saturate(200%) brightness(1.2);
+      border-color:rgba(255,255,255,0.25);
+      box-shadow:0 6px 30px rgba(204,255,0,0.15),inset 0 2px 8px rgba(255,255,255,0.3),inset 0 -1px 0 rgba(255,255,255,0.1);
+    }
+    /* zoom animation classes */
+    .manifesto-present-wrap.zooming{transform:scale(1.06);transition:transform .36s cubic-bezier(.2,.9,.2,1)}
+    .manifesto-present-text.zooming{transform:scale(1.08) translateY(-6px);opacity:0.14;transition:transform .36s cubic-bezier(.2,.9,.2,1),opacity .28s}
+    .present-overlay.open .manifesto-present-text{transform:none;opacity:1}
+    .present-close{position:absolute;right:20px;top:18px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .present-nav{position:absolute;left:12px;right:12px;top:50%;transform:translateY(-50%);display:flex;justify-content:space-between;pointer-events:none}
+    .present-btn{background:rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.06);color:#fff;padding:12px 14px;border-radius:10px;cursor:pointer;pointer-events:auto}
+    .present-counter{position:absolute;bottom:62px;color:rgba(255,255,255,0.6);font-size:0.95rem;width:100%;text-align:center}
+    .present-thumbs{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center}
+    .present-thumb{background:rgba(255,255,255,0.06);color:#fff;padding:6px 10px;border-radius:8px;font-size:0.85rem;cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
+    .present-thumb.active{background:var(--accent-acid);color:#000;border-color:rgba(0,0,0,0.15);font-weight:700}
+    .present-progress{position:absolute;left:12px;right:12px;bottom:8px;height:6px;background:rgba(255,255,255,0.04);border-radius:99px;overflow:hidden}
+    .present-progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent-acid),#fff);transition:width .28s ease}
+    /* hide custom cursor while presenting */
+    body.presenting .cursor-dot, body.presenting .cursor-outline{opacity:0;pointer-events:none;transform:scale(.6) !important}
+
+    /* TOC / Stage overlay (zoom-through-title -> spotlights) */
+    .toc-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(3,3,3,0.97);z-index:2900;opacity:0;pointer-events:none;transition:opacity .36s ease}
+    .toc-overlay.open{opacity:1;pointer-events:auto}
+    .stage{position:relative;width:100%;max-width:1100px;padding:40px 20px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+    .stage-spotlights{display:none}
+    .stage-spot{display:none}
+
+    .toc-list{list-style:none;margin-top:160px;display:flex;flex-direction:column;gap:18px;align-items:center;padding:0;position:relative;perspective:1000px}
+    .toc-list li{font-family:var(--font-head);color:var(--text-main);font-size:clamp(2rem,5vw,4.5rem);opacity:0;transform:translateY(20px) scale(.992);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.2,1),color .3s ease,text-shadow .3s ease,filter .4s ease;position:relative;cursor:pointer;padding:12px 24px;border-radius:8px;z-index:1;transform-style:preserve-3d;text-align:center;width:100%}
+    .toc-list li.show{opacity:1;transform:none}
+    /* Dim other items when one is hovered */
+    .toc-list:has(li:hover) li:not(:hover){opacity:0.15;filter:blur(3px);transform:scale(0.95)}
+    .toc-list li.dimmed{opacity:0.12 !important;filter:blur(4px) !important;transform:scale(0.94) !important;transition:opacity .4s ease,filter .4s ease,transform .4s ease}
+    /* Spotlight effect on hover - follows mouse cursor */
+    .toc-list li{--spotlight-x: 50%; --spotlight-y: 50%;}
+    .toc-list li::before{content:'';position:absolute;left:var(--spotlight-x);top:var(--spotlight-y);transform:translate(-50%,-50%);width:0;height:0;border-radius:50%;background:radial-gradient(circle, rgba(255,255,220,0.85) 0%, rgba(255,255,220,0.35) 25%, rgba(255,255,220,0.1) 40%, transparent 70%);filter:blur(45px);opacity:0;transition:width .5s cubic-bezier(.2,.9,.2,1),height .5s cubic-bezier(.2,.9,.2,1),opacity .4s ease,left .15s ease,top .15s ease;pointer-events:none;z-index:-1}
+    .toc-list li:hover::before{width:450px;height:450px;opacity:1}
+    .toc-list li:hover{color:var(--accent-acid);text-shadow:0 0 25px rgba(204,255,0,0.7),0 0 50px rgba(204,255,0,0.4),0 0 75px rgba(204,255,0,0.2)}
+    .toc-close{position:absolute;right:20px;top:18px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+
+    @media (max-width:700px){
+      .stage-spot{width:260px;height:260px}
+      .toc-list{margin-top:120px}
+      .toc-list li{font-size:clamp(1.4rem,4.5vw,2.8rem)}
+    }
+
+    /* Big X */
+    .big-x-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(1.2);font-family:var(--font-head);font-size:clamp(10rem,22vw,26rem);color:var(--accent-red);opacity:0;pointer-events:none;transition:opacity .8s,transform .8s}
+    .big-x-mark.visible{opacity:0.09;transform:translate(-50%,-50%) rotate(-10deg) scale(1)}
+
+    /* cards and grids */
+    .grid-layout{display:grid;grid-template-columns:repeat(2,1fr);gap:28px}
+    .grid-item{background:var(--glass-bg);border:1px solid rgba(255,255,255,0.04);padding:42px;border-radius:18px}
+    .mono-tag{font-family:monospace;color:var(--accent-acid);display:inline-block;margin-bottom:18px;font-size:.9rem}
+
+    .concept-box{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:60px;border-radius:18px}
+
+    /* Level grid */
+    .level-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:24px}
+    .level-card{background:linear-gradient(180deg, rgba(0,0,0,0.3), rgba(0,0,0,0.2));border-radius:14px;overflow:hidden;transform-origin:center center}
+    .level-img-box{width:100%;height:clamp(120px,18vh,180px);background:#222;overflow:hidden}
+    .level-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
+    .level-info{padding:18px}
+
+    /* interactive cursor */
+    .cursor-dot,.cursor-outline{position:fixed;top:0;left:0;transform:translate(-50%,-50%);pointer-events:none;z-index:9999}
+    .cursor-dot{width:8px;height:8px;background:var(--accent-acid);border-radius:50%;transition:transform .12s, background .12s}
+    .cursor-outline{width:46px;height:46px;border-radius:50%;border:1px solid var(--accent-acid);transition:width .18s,height .18s,opacity .18s,transform .12s;opacity:0.95}
+    .cursor-outline.grow{width:86px;height:86px;opacity:0.7}
+
+    /* hover/tilt microinteraction */
+    .level-card:hover .level-img{transform:scale(1.06)}
+
+    /* responsive tweaks */
+    @media (max-width:980px){
+      .hero-inner{grid-template-columns:1fr}
+      .grid-layout{grid-template-columns:1fr}
+      .site-nav{top:12px}
+    }
+
+    @media (max-width:700px){
+      .hero{padding:80px 16px}
+      .level-img-box{height:clamp(100px,16vh,140px)}
+      .big-x-mark{display:none}
+    }
+    /* hero zoom animation for click -> zoom -> manifesto */
+    .hero.hero-zooming{transform-origin:center center;transition:transform .42s cubic-bezier(.2,.9,.2,1),filter .42s;transform:scale(1.04)}
+    .hero.hero-zooming .hero-title{filter:blur(0.6px)}
+  </style>
+</head>
+<body>
+  <video class="bg-video" autoplay muted loop playsinline preload="auto">
+    <source src="background.mp4" type="video/mp4">
+    <source src="background.webm" type="video/webm">
+    <!-- Fallback to image if video not supported -->
+  </video>
+  <div class="orb-container">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <div class="cursor-dot" aria-hidden="true"></div>
+  <div class="cursor-outline" aria-hidden="true"></div>
+
+  <!-- top navigation removed -->
+
+  <section class="hero">
+    <div class="hero-title-wrapper">
+      <h1 class="hero-title"><span class="hero-title-inner" data-text="XR Concert">XR Concert</span></h1>
+      <div class="hero-subtitle">Unreal Engine Project</div>
+    </div>
+    <div style="margin-top:40px;z-index:2;font-family:var(--font-body);color:var(--accent-acid);">CLICK TO START</div>
+  </section>
+
+  <!-- Content below hero removed per request -->
+</body>
+<script>
+// Mantis-like interactivity: cursor, parallax and reveal-on-scroll
+(function(){
+  const cursorDot = document.querySelector('.cursor-dot');
+  const cursorOutline = document.querySelector('.cursor-outline');
+  const hoverTargets = document.querySelectorAll('.hover-target, a, button');
+
+  let mouse = {x: window.innerWidth/2, y: window.innerHeight/2};
+  let outlinePos = {x: mouse.x, y: mouse.y};
+
+  // mouse move
+  window.addEventListener('mousemove', (e)=>{
+    mouse.x = e.clientX; mouse.y = e.clientY;
+    cursorDot.style.transform = `translate(${mouse.x}px, ${mouse.y}px)`;
+  });
+
+  // simple lerped outline for smoothness
+  function raf(){
+    outlinePos.x += (mouse.x - outlinePos.x) * 0.18;
+    outlinePos.y += (mouse.y - outlinePos.y) * 0.18;
+    cursorOutline.style.transform = `translate(${outlinePos.x}px, ${outlinePos.y}px)`;
+    requestAnimationFrame(raf);
+  }
+  raf();
+
+  hoverTargets.forEach(el=>{
+    el.addEventListener('mouseenter', ()=> cursorOutline.classList.add('grow'))
+    el.addEventListener('mouseleave', ()=> cursorOutline.classList.remove('grow'))
+  })
+
+  // Parallax orbs on mouse move
+  const orbs = document.querySelectorAll('.orb');
+  window.addEventListener('mousemove', (e)=>{
+    const cx = e.clientX - window.innerWidth/2;
+    const cy = e.clientY - window.innerHeight/2;
+    orbs.forEach((o, i)=>{
+      const depth = (i+1) * 6; // different movement per orb
+      o.style.transform = `translate(${cx/depth}px, ${cy/depth}px)`;
+    });
+  });
+
+  // IntersectionObserver reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting) entry.target.classList.add('visible');
+      // optional: unobserve for performance
+    })
+  },{threshold:0.12});
+
+  document.querySelectorAll('.section-padding, .grid-item, .level-card, .concept-box, .marker').forEach(el=>{
+    el.classList.add('reveal'); io.observe(el);
+  });
+
+  // Big X reveal linked to scroll position
+  const bigX = document.querySelector('.big-x-mark');
+  if(bigX){
+    const obs = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting) bigX.classList.add('visible');
+        else bigX.classList.remove('visible');
+      })
+    }, {threshold:0.2});
+    obs.observe(bigX.parentElement || bigX);
+  }
+
+  // Presentation overlay setup (hero-triggered)
+  // Hardcoded manifesto text used as the primary slide content so page can be minimal.
+  const manifestoText = '그렇다면 언리얼 환경에서 단상이 있는 XR 콘서트를 굳이 구현할 필요가 있는가?';
+
+  // Purpose content HTML
+  const purposeContent = `
+    <div class="purpose-content-wrap">
+      <h2 class="purpose-title">Purpose</h2>
+      <div class="purpose-content">
+        <p>언리얼엔진으로 구현하는 XR콘서트의 목적</p>
+        <p>언리얼엔진은 사실적인 표현과 맵 제작으로도 유명하지만, 현실과 가상을 넘나드는 도구로 쓰이기도 한다.</p>
+        <div class="purpose-quote">그렇다면…언리얼 환경에서 단상이 있는 XR 콘서트를 굳이 구현할 필요가 있는가?</div>
+        <p>'X'라고 생각한다. 그 이유는 크게 두가지가 있다.</p>
+        <div class="purpose-section">
+          <div class="purpose-section-title">첫번째</div>
+          <p>리얼 타임으로 구현을 한다고 가정을 했을 때, 현재는 <strong>ICVFX</strong>, 즉 인-카메라 VFX 방식을 사용한 콘서트가 대다수이다 (이마저도 유튜브에 'XR콘서트'라고 검색어를 치면 참고할만한 자료가 3년전이다…과도기라는 뜻이다…). 근데 이 ICVFX 스튜디오는 이미 LED 스크린으로 구성된 바닥과 벽이 이미 단상처럼 구성되어있다. 심지어 메인 조명도 언리얼 환경이 아닌 실제 환경에서 컨트롤 한다.</p>
+        </div>
+        <div class="purpose-section">
+          <div class="purpose-section-title">두번째</div>
+          <p>XR콘서트의 콘텐츠를 경험한다고 가정했을 때, 대부분 헤드마운트와 같이 현실을 단절하고, 가상의 세계 몰입할 수 있는 기기가 아직까지는 필요할 것이다. 이를 보았을 때, 콘텐츠를 소비하는 사람들은 '과연 현실에 있는 무대를 원할까?' 아니면 '현실에서 느낄 수 없는 다른 차원의 것을 원할까?' 이를 고민해보았을 때, 역시나 후자가 더 많을 것이다.</p>
+        </div>
+      </div>
+      <button class="purpose-next-btn">2. Project Strategy</button>
+    </div>
+  `;
+
+  // Project Strategy content HTML
+  const projectStrategyContent = `
+    <div class="purpose-content-wrap project-strategy-wrap">
+      <h2 class="purpose-title">Project Strategy</h2>
+      <div class="purpose-content">
+        <p>그렇기 때문에, 현실에서 만들어낼 수 없는 (혹은 실제 환경에서 표현하기 어려운) 요소와 구성을 넣는 것이 필요하다고 생각함.</p>
+        <div class="purpose-section">
+          <p>그래서 프로젝트 안에 여러 개의 테마를 가진 각각의 레벨을 제작. = 하나의 스튜디오에 여러개의 세트장이 있는 효과</p>
+        </div>
+      </div>
+      <button class="purpose-next-btn">3. Artist</button>
+    </div>
+  `;
+
+  // Artist content HTML
+  const artistContent = `
+    <div class="purpose-content-wrap artist-wrap">
+      <h2 class="purpose-title">Artist</h2>
+      <div class="purpose-content">
+        <p>아티스트 소개 및 콘서트 로그라인</p>
+        <p>그런데 막상 만들려고 하니 막막하다!</p>
+        <p>그래서 아티스트와 그에 맞는 곡을 선정했다.</p>
+        <div class="purpose-section">
+          <div class="purpose-section-title">아티스트 소개</div>
+          <p>아티스트에 대해 짧게 설명하면 이름은 <strong>딘(DEAN)</strong>이며, 한국에서 신비주의로 꼽히는 RnB 가수이다. 이 가수는 디스토피아적인 세계관을 선호한다. 예를 들어, 조지오웰의 <1984> 같은… . 인스타 계정 이름도 뒤에 trbl(Trouble)을 붙이며 '자신은 불안정함을 좋아한다." 라고 말을 한다.</p>
+        </div>
+        <div class="purpose-quote">무너져가는 디스토피아에서 불안정함을 노래하다.</div>
+      </div>
+      <button class="purpose-next-btn">4. Levels</button>
+    </div>
+  `;
+
+  // Levels content HTML
+  const levelsContent = `
+    <div class="purpose-content-wrap levels-wrap">
+      <h2 class="purpose-title">Levels</h2>
+      <div class="purpose-content">
+        <p>노래에 어울리는 컨셉과 관련된 내용으로 레벨을 제작하였다.</p>
+        <div class="levels-grid">
+          <div class="level-content-card" data-level="howlin404" data-img="howlin404.jpg" data-video="howlin404.mp4">
+            <div class="level-content-img-box">
+              <div class="level-content-img" style="background:linear-gradient(135deg,rgba(139,69,19,0.6),rgba(75,0,130,0.6));display:flex;align-items:center;justify-content:center;color:var(--accent-acid);font-size:2rem;font-weight:700">Howlin' 404</div>
+            </div>
+            <div class="level-content-info">
+              <div class="level-content-title">Howlin' 404</div>
+              <div class="level-content-desc">디스토피아적인 공간에서 판타지적인 느낌과 약간의 그로테스크한 색감을 가져갔다.</div>
+            </div>
+          </div>
+          <div class="level-content-card" data-level="nasa" data-img="nasa.jpg" data-video="nasa.mp4">
+            <div class="level-content-img-box">
+              <div class="level-content-img" style="background:linear-gradient(135deg,rgba(70,130,180,0.6),rgba(176,196,222,0.6));display:flex;align-items:center;justify-content:center;color:var(--accent-acid);font-size:2rem;font-weight:700">NASA</div>
+            </div>
+            <div class="level-content-info">
+              <div class="level-content-title">NASA</div>
+              <div class="level-content-desc">페허가 된 건물에 눈이 내리는 감성적인 디스토피아 세계관을 제작하였다.</div>
+            </div>
+          </div>
+          <div class="level-content-card" data-level="bonnieclyde" data-img="bonnieclyde.jpg" data-video="bonnieclyde.mp4">
+            <div class="level-content-img-box">
+              <div class="level-content-img" style="background:linear-gradient(135deg,rgba(139,69,19,0.6),rgba(160,82,45,0.6));display:flex;align-items:center;justify-content:center;color:var(--accent-acid);font-size:1.8rem;font-weight:700">Bonnie & Clyde</div>
+            </div>
+            <div class="level-content-info">
+              <div class="level-content-title">Bonnie & Clyde</div>
+              <div class="level-content-desc">무너져가는 건물을 두 개의 층으로 나눠 윗층은 빈티지적인, 아무도 드나들지 않은 페허가 된 공간으로, 아래층은 차가운 분위기의 수영장으로 구성하였다.</div>
+            </div>
+          </div>
+          <div class="level-content-card" data-level="nocturne07" data-img="nocturne07.jpg" data-video="nocturne07.mp4">
+            <div class="level-content-img-box">
+              <div class="level-content-img" style="background:linear-gradient(135deg,rgba(25,25,112,0.6),rgba(70,130,180,0.6));display:flex;align-items:center;justify-content:center;color:var(--accent-acid);font-size:1.8rem;font-weight:700">Nocturne 07</div>
+            </div>
+            <div class="level-content-info">
+              <div class="level-content-title">Nocturne 07</div>
+              <div class="level-content-desc">무너져가는 건물을 두 개의 층으로 나눠 윗층은 빈티지적인, 아무도 드나들지 않은 페허가 된 공간으로, 아래층은 차가운 분위기의 수영장으로 구성하였다.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Build overlay with controls and counter
+  const overlay = document.createElement('div');
+  overlay.className = 'present-overlay';
+  overlay.innerHTML = `
+    <div class="present-spotlight"></div>
+    <div class="manifesto-present-wrap">
+      <div class="manifesto-present-text"></div>
+    </div>
+    ${purposeContent}
+    ${projectStrategyContent}
+    ${artistContent}
+    ${levelsContent}
+    <div class="present-nav">
+      <button class="present-btn prev" aria-label="Previous">◀</button>
+      <button class="present-btn next" aria-label="Next">▶</button>
+    </div>
+    <button class="present-close" aria-label="Close presentation">Close ✕</button>
+    <div class="present-counter" aria-hidden="true"></div>
+    <div class="present-thumbs" aria-hidden="true"></div>
+    <div class="present-progress"><div class="present-progress-fill"></div></div>
+  `;
+  document.body.appendChild(overlay);
+  
+  const purposeWrap = overlay.querySelector('.purpose-content-wrap:not(.project-strategy-wrap):not(.artist-wrap):not(.levels-wrap)');
+  const projectStrategyWrap = overlay.querySelector('.project-strategy-wrap');
+  const artistWrap = overlay.querySelector('.artist-wrap');
+  const levelsWrap = overlay.querySelector('.levels-wrap');
+  const manifestoWrap = overlay.querySelector('.manifesto-present-wrap');
+  
+  // Initially hide content
+  if(purposeWrap) purposeWrap.style.display = 'none';
+  if(projectStrategyWrap) projectStrategyWrap.style.display = 'none';
+  if(artistWrap) artistWrap.style.display = 'none';
+  if(levelsWrap) levelsWrap.style.display = 'none';
+  
+  // --- TOC overlay (stage + spotlights) ---
+  const toc = document.createElement('div');
+  toc.className = 'toc-overlay';
+  toc.innerHTML = `
+    <div class="stage">
+      <div class="stage-spotlights">
+        <div class="stage-spot left"></div>
+        <div class="stage-spot center"></div>
+        <div class="stage-spot right"></div>
+      </div>
+      <button class="toc-close" aria-label="Close contents">Close ✕</button>
+      <ul class="toc-list" role="list">
+        <li data-idx="0">1. Purpose</li>
+        <li data-idx="1">2. Project Strategy</li>
+        <li data-idx="2">3. Artist</li>
+        <li data-idx="3">4. Levels</li>
+      </ul>
+    </div>
+  `;
+  document.body.appendChild(toc);
+  const tocList = toc.querySelectorAll('.toc-list li');
+  const tocClose = toc.querySelector('.toc-close');
+
+  function openToc(){
+    toc.classList.add('open');
+    document.body.classList.add('presenting');
+    // Reset scroll to top only for the overlay content, not the page
+    // The TOC overlay is fixed, so we don't need to reset window scroll
+    const stage = toc.querySelector('.stage');
+    if(stage) {
+      stage.scrollTop = 0;
+    }
+    // Reset any scrollable content within TOC
+    const tocListContainer = toc.querySelector('.toc-list');
+    if(tocListContainer && tocListContainer.parentElement) {
+      tocListContainer.parentElement.scrollTop = 0;
+    }
+    // stagger reveal
+    tocList.forEach((li,i)=>{
+      li.classList.remove('show');
+      setTimeout(()=> li.classList.add('show'), 220 + i*140);
+    });
+  }
+  function closeToc(){
+    toc.classList.remove('open');
+    document.body.classList.remove('presenting');
+    tocList.forEach(li=> li.classList.remove('show'));
+  }
+  tocClose.addEventListener('click', closeToc);
+  toc.addEventListener('click', (e)=>{ if(e.target === toc) closeToc(); });
+  
+  // Handle TOC item clicks
+  tocList.forEach((li, index) => {
+    li.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if(index === 0) {
+        // Purpose clicked
+        currentMode = 'purpose';
+        closeToc();
+        setTimeout(() => {
+          openPresent();
+        }, 300);
+      } else if(index === 1) {
+        // Project Strategy clicked
+        currentMode = 'project-strategy';
+        closeToc();
+        setTimeout(() => {
+          openPresent();
+        }, 300);
+      } else if(index === 2) {
+        // Artist clicked
+        currentMode = 'artist';
+        closeToc();
+        setTimeout(() => {
+          openPresent();
+        }, 300);
+      } else if(index === 3) {
+        // Levels clicked
+        currentMode = 'levels';
+        closeToc();
+        setTimeout(() => {
+          openPresent();
+        }, 300);
+      } else {
+        // Other items - can be extended later
+        console.log('Clicked:', li.textContent);
+      }
+    });
+  });
+
+  // Spotlight effect that follows mouse cursor on TOC items
+  // Dim other items when one is hovered
+  tocList.forEach(li => {
+    li.addEventListener('mouseenter', () => {
+      // Dim all other items
+      tocList.forEach(otherLi => {
+        if(otherLi !== li) {
+          otherLi.classList.add('dimmed');
+        }
+      });
+    });
+    
+    li.addEventListener('mouseleave', () => {
+      // Restore all items
+      tocList.forEach(otherLi => {
+        otherLi.classList.remove('dimmed');
+      });
+      // Reset spotlight to center when mouse leaves
+      li.style.setProperty('--spotlight-x', '50%');
+      li.style.setProperty('--spotlight-y', '50%');
+      // Reset 3D transform
+      li.style.transform = '';
+    });
+    
+    li.addEventListener('mousemove', (e) => {
+      const rect = li.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      // Calculate mouse position relative to center (-1 to 1)
+      const mouseX = (x - centerX) / centerX;
+      const mouseY = (y - centerY) / centerY;
+      
+      // Update spotlight position based on mouse position
+      const offsetX = (x - centerX) * 0.3;
+      const offsetY = (y - centerY) * 0.3;
+      
+      li.style.setProperty('--spotlight-x', `${50 + (offsetX / rect.width) * 100}%`);
+      li.style.setProperty('--spotlight-y', `${50 + (offsetY / rect.height) * 100}%`);
+      
+      // 3D rotation based on mouse position (X, Y, Z-axis rotation)
+      const rotateY = mouseX * 25; // -25 to 25 degrees (left-right tilt)
+      const rotateX = -mouseY * 20; // -20 to 20 degrees (up-down tilt)
+      const rotateZ = mouseX * 8 + mouseY * 5; // Z-axis rotation (combination of X and Y)
+      const scale = 1.08 + Math.abs(mouseX) * 0.03 + Math.abs(mouseY) * 0.03;
+      
+      li.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${scale}) translateZ(30px)`;
+    });
+  });
+  const presentText = overlay.querySelector('.manifesto-present-text');
+  const closeBtn = overlay.querySelector('.present-close');
+  const prevBtn = overlay.querySelector('.present-btn.prev');
+  const nextBtn = overlay.querySelector('.present-btn.next');
+  const counter = overlay.querySelector('.present-counter');
+
+  // Customizable slides array — edit this list to change the presentation slides
+  const SLIDES = [
+    { title: 'Manifesto', content: manifestoText, thumb: 'Manifesto' }
+  ];
+
+  // small UI hooks
+  const thumbs = overlay.querySelector('.present-thumbs');
+  const progressFill = overlay.querySelector('.present-progress-fill');
+
+  // populate thumbnails (clickable)
+  SLIDES.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'present-thumb';
+    btn.type = 'button';
+    btn.textContent = s.thumb || s.title || `Slide ${i+1}`;
+    btn.addEventListener('click', (ev) => { ev.stopPropagation(); idx = i; render(); });
+    thumbs.appendChild(btn);
+  });
+
+  let idx = 0;
+  let currentMode = 'manifesto'; // 'manifesto', 'purpose', 'project-strategy', 'artist', or 'levels'
+  
+  function render(){
+    if(currentMode === 'purpose'){
+      // Show purpose content
+      if(manifestoWrap) manifestoWrap.style.display = 'none';
+      if(purposeWrap) purposeWrap.style.display = 'block';
+      if(projectStrategyWrap) projectStrategyWrap.style.display = 'none';
+      if(artistWrap) artistWrap.style.display = 'none';
+      if(levelsWrap) levelsWrap.style.display = 'none';
+      if(counter) counter.style.display = 'none';
+      if(thumbs) thumbs.style.display = 'none';
+      if(prevBtn) prevBtn.style.display = 'none';
+      if(nextBtn) nextBtn.style.display = 'none';
+    } else if(currentMode === 'project-strategy'){
+      // Show project strategy content
+      if(manifestoWrap) manifestoWrap.style.display = 'none';
+      if(purposeWrap) purposeWrap.style.display = 'none';
+      if(projectStrategyWrap) projectStrategyWrap.style.display = 'block';
+      if(artistWrap) artistWrap.style.display = 'none';
+      if(levelsWrap) levelsWrap.style.display = 'none';
+      if(counter) counter.style.display = 'none';
+      if(thumbs) thumbs.style.display = 'none';
+      if(prevBtn) prevBtn.style.display = 'none';
+      if(nextBtn) nextBtn.style.display = 'none';
+    } else if(currentMode === 'artist'){
+      // Show artist content
+      if(manifestoWrap) manifestoWrap.style.display = 'none';
+      if(purposeWrap) purposeWrap.style.display = 'none';
+      if(projectStrategyWrap) projectStrategyWrap.style.display = 'none';
+      if(artistWrap) artistWrap.style.display = 'block';
+      if(levelsWrap) levelsWrap.style.display = 'none';
+      if(counter) counter.style.display = 'none';
+      if(thumbs) thumbs.style.display = 'none';
+      if(prevBtn) prevBtn.style.display = 'none';
+      if(nextBtn) nextBtn.style.display = 'none';
+    } else if(currentMode === 'levels'){
+      // Show levels content
+      if(manifestoWrap) manifestoWrap.style.display = 'none';
+      if(purposeWrap) purposeWrap.style.display = 'none';
+      if(projectStrategyWrap) projectStrategyWrap.style.display = 'none';
+      if(artistWrap) artistWrap.style.display = 'none';
+      if(levelsWrap) levelsWrap.style.display = 'block';
+      if(counter) counter.style.display = 'none';
+      if(thumbs) thumbs.style.display = 'none';
+      if(prevBtn) prevBtn.style.display = 'none';
+      if(nextBtn) nextBtn.style.display = 'none';
+    } else {
+      // Show manifesto content
+      if(manifestoWrap) manifestoWrap.style.display = 'flex';
+      if(purposeWrap) purposeWrap.style.display = 'none';
+      if(projectStrategyWrap) projectStrategyWrap.style.display = 'none';
+      if(artistWrap) artistWrap.style.display = 'none';
+      if(levelsWrap) levelsWrap.style.display = 'none';
+      if(counter) counter.style.display = 'block';
+      if(thumbs) thumbs.style.display = 'flex';
+      if(prevBtn) prevBtn.style.display = 'block';
+      if(nextBtn) nextBtn.style.display = 'block';
+      
+      const slide = SLIDES[idx] || { content: '' };
+      if(presentText) presentText.textContent = slide.content || '';
+      if(counter) counter.textContent = `${idx+1} / ${SLIDES.length}`;
+      const pct = ((idx+1) / SLIDES.length) * 100;
+      if(progressFill) progressFill.style.width = pct + '%';
+      // active thumb
+      if(thumbs) thumbs.querySelectorAll('.present-thumb').forEach((t, ti)=> t.classList.toggle('active', ti === idx));
+    }
+  }
+
+  function openPresent(){
+    overlay.classList.add('open');
+    document.documentElement.style.scrollBehavior = 'auto';
+    document.body.style.overflow = 'hidden';
+    document.body.classList.add('presenting');
+    render();
+    
+    // Setup scroll-based animations for Purpose content
+    if(currentMode === 'purpose' && purposeWrap){
+      setTimeout(() => {
+        setupPurposeScrollAnimations();
+      }, 400);
+    }
+    
+    // Setup scroll-based animations for Project Strategy content
+    if(currentMode === 'project-strategy' && projectStrategyWrap){
+      setTimeout(() => {
+        setupPurposeScrollAnimations(projectStrategyWrap);
+      }, 400);
+    }
+    
+    // Setup scroll-based animations for Artist content
+    if(currentMode === 'artist' && artistWrap){
+      setTimeout(() => {
+        setupPurposeScrollAnimations(artistWrap);
+      }, 400);
+    }
+    
+    // Setup scroll-based animations for Levels content
+    if(currentMode === 'levels' && levelsWrap){
+      setTimeout(() => {
+        setupLevelsScrollAnimations();
+      }, 400);
+    }
+  }
+  
+  function setupPurposeScrollAnimations(targetWrap = purposeWrap){
+    const contentWrap = targetWrap || purposeWrap;
+    const purposeContent = contentWrap.querySelector('.purpose-content');
+    if(!purposeContent) return;
+    
+    // Animate title first
+    const title = contentWrap.querySelector('.purpose-title');
+    if(title){
+      setTimeout(() => {
+        contentWrap.classList.add('scrolled');
+      }, 200);
+    }
+    
+    // Setup IntersectionObserver for scroll-triggered animations
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if(entry.isIntersecting){
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, index * 150); // Stagger animations
+        }
+      });
+    }, observerOptions);
+    
+    // Observe paragraphs
+    const paragraphs = purposeContent.querySelectorAll('p');
+    paragraphs.forEach(p => {
+      observer.observe(p);
+    });
+    
+    // Observe quote (special attention)
+    const quote = purposeContent.querySelector('.purpose-quote');
+    if(quote){
+      const quoteObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            setTimeout(() => {
+              entry.target.classList.add('visible');
+              // Add extra attention with sound-like visual feedback
+              const ripple = document.createElement('div');
+              ripple.style.cssText = 'position:absolute;inset:-10px;border:2px solid var(--accent-acid);border-radius:12px;opacity:0.6;animation:ripple-out 1.5s ease-out';
+              quote.appendChild(ripple);
+              setTimeout(() => ripple.remove(), 1500);
+            }, 300);
+          }
+        });
+      }, { threshold: 0.3 });
+      quoteObserver.observe(quote);
+    }
+    
+    // Observe sections
+    const sections = purposeContent.querySelectorAll('.purpose-section');
+    sections.forEach(section => {
+      observer.observe(section);
+    });
+    
+    // Observe next button
+    const nextBtn = contentWrap.querySelector('.purpose-next-btn');
+    if(nextBtn){
+      const btnObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            setTimeout(() => {
+              entry.target.classList.add('visible');
+            }, 200);
+          }
+        });
+      }, { threshold: 0.5 });
+      btnObserver.observe(nextBtn);
+      
+      // Add same interactive effects as TOC items
+      nextBtn.addEventListener('mousemove', (e) => {
+        const rect = nextBtn.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        // Calculate mouse position relative to center (-1 to 1)
+        const mouseX = (x - centerX) / centerX;
+        const mouseY = (y - centerY) / centerY;
+        
+        // Update spotlight position based on mouse position
+        const offsetX = (x - centerX) * 0.3;
+        const offsetY = (y - centerY) * 0.3;
+        
+        nextBtn.style.setProperty('--spotlight-x', `${50 + (offsetX / rect.width) * 100}%`);
+        nextBtn.style.setProperty('--spotlight-y', `${50 + (offsetY / rect.height) * 100}%`);
+        
+        // 3D rotation based on mouse position (X, Y, Z-axis rotation)
+        const rotateY = mouseX * 25; // -25 to 25 degrees (left-right tilt)
+        const rotateX = -mouseY * 20; // -20 to 20 degrees (up-down tilt)
+        const rotateZ = mouseX * 8 + mouseY * 5; // Z-axis rotation (combination of X and Y)
+        const scale = 1.08 + Math.abs(mouseX) * 0.03 + Math.abs(mouseY) * 0.03;
+        
+        nextBtn.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${scale}) translateZ(30px)`;
+      });
+      
+      nextBtn.addEventListener('mouseleave', () => {
+        // Reset spotlight to center when mouse leaves
+        nextBtn.style.setProperty('--spotlight-x', '50%');
+        nextBtn.style.setProperty('--spotlight-y', '50%');
+        // Reset 3D transform
+        nextBtn.style.transform = '';
+      });
+      
+      // Click handler - determine next content based on current mode
+      nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const btnText = nextBtn.textContent.trim();
+        
+        if(btnText.includes('Project Strategy')){
+          // Go to Project Strategy
+          closePresent();
+          setTimeout(() => {
+            currentMode = 'project-strategy';
+            openPresent();
+          }, 300);
+        } else if(btnText.includes('Artist')){
+          // Go to Artist
+          closePresent();
+          setTimeout(() => {
+            currentMode = 'artist';
+            openPresent();
+          }, 300);
+        } else if(btnText.includes('Levels')){
+          // Go to Levels
+          closePresent();
+          setTimeout(() => {
+            currentMode = 'levels';
+            openPresent();
+          }, 300);
+        }
+      });
+    }
+    
+    // Add ripple animation for quote
+    if(!document.querySelector('#purpose-ripple-style')){
+      const style = document.createElement('style');
+      style.id = 'purpose-ripple-style';
+      style.textContent = `
+        @keyframes ripple-out {
+          0% { transform: scale(0.8); opacity: 0.6; }
+          100% { transform: scale(1.5); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+  
+  function setupLevelsScrollAnimations(){
+    if(!levelsWrap) return;
+    
+    const levelsGrid = levelsWrap.querySelector('.levels-grid');
+    if(!levelsGrid) return;
+    
+    // Animate title first
+    const title = levelsWrap.querySelector('.purpose-title');
+    if(title){
+      setTimeout(() => {
+        levelsWrap.classList.add('scrolled');
+      }, 200);
+    }
+    
+    // Setup IntersectionObserver for cards
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if(entry.isIntersecting){
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, index * 150); // Stagger animations
+        }
+      });
+    }, observerOptions);
+    
+    // Observe grid
+    observer.observe(levelsGrid);
+    
+    // Observe individual cards
+    const cards = levelsGrid.querySelectorAll('.level-content-card');
+    cards.forEach(card => {
+      observer.observe(card);
+      
+      // Add TOC-like hover effects (spotlight and 3D rotation)
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        // Calculate mouse position relative to center (-1 to 1)
+        const mouseX = (x - centerX) / centerX;
+        const mouseY = (y - centerY) / centerY;
+        
+        // Update spotlight position based on mouse position
+        const offsetX = (x - centerX) * 0.3;
+        const offsetY = (y - centerY) * 0.3;
+        
+        card.style.setProperty('--spotlight-x', `${50 + (offsetX / rect.width) * 100}%`);
+        card.style.setProperty('--spotlight-y', `${50 + (offsetY / rect.height) * 100}%`);
+        
+        // 3D rotation based on mouse position (X, Y, Z-axis rotation)
+        const rotateY = mouseX * 15; // -15 to 15 degrees (left-right tilt)
+        const rotateX = -mouseY * 12; // -12 to 12 degrees (up-down tilt)
+        const rotateZ = mouseX * 5 + mouseY * 3; // Z-axis rotation
+        const scale = 1.02 + Math.abs(mouseX) * 0.02 + Math.abs(mouseY) * 0.02;
+        
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${scale}) translateZ(20px)`;
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        // Reset spotlight to center when mouse leaves
+        card.style.setProperty('--spotlight-x', '50%');
+        card.style.setProperty('--spotlight-y', '50%');
+        // Reset 3D transform
+        card.style.transform = '';
+      });
+      
+      // Click handler - open media modal
+      card.addEventListener('click', () => {
+        openLevelMediaModal(card);
+      });
+    });
+    
+    // Observe paragraphs
+    const paragraphs = levelsWrap.querySelectorAll('.purpose-content p');
+    paragraphs.forEach(p => {
+      observer.observe(p);
+    });
+  }
+  
+  // Level media modal functions
+  function openLevelMediaModal(card){
+    const imgPath = card.getAttribute('data-img');
+    const videoPath = card.getAttribute('data-video');
+    const levelName = card.querySelector('.level-content-title').textContent;
+    
+    // Create or get modal
+    let modal = document.querySelector('.level-media-modal');
+    if(!modal){
+      modal = document.createElement('div');
+      modal.className = 'level-media-modal';
+      modal.innerHTML = `
+        <div class="level-media-content">
+          <button class="level-media-close">✕</button>
+          <div class="level-media-container"></div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      
+      // Close button handler
+      const closeBtn = modal.querySelector('.level-media-close');
+      closeBtn.addEventListener('click', () => closeLevelMediaModal());
+      modal.addEventListener('click', (e) => {
+        if(e.target === modal) closeLevelMediaModal();
+      });
+      
+      // ESC key handler
+      document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape' && modal.classList.contains('open')){
+          closeLevelMediaModal();
+        }
+      });
+    }
+    
+    const container = modal.querySelector('.level-media-container');
+    container.innerHTML = '';
+    
+    // Add video if available, otherwise image
+    if(videoPath){
+      const video = document.createElement('video');
+      video.className = 'level-media-video';
+      video.src = videoPath;
+      video.controls = true;
+      video.autoplay = true;
+      video.loop = true;
+      container.appendChild(video);
+    } else if(imgPath){
+      const img = document.createElement('img');
+      img.className = 'level-media-img';
+      img.src = imgPath;
+      img.alt = levelName;
+      container.appendChild(img);
+    } else {
+      // Fallback: show level name
+      container.innerHTML = `<div style="padding:60px;text-align:center;color:var(--accent-acid);font-size:2rem;font-family:var(--font-head)">${levelName}</div>`;
+    }
+    
+    modal.classList.add('open');
+  }
+  
+  function closeLevelMediaModal(){
+    const modal = document.querySelector('.level-media-modal');
+    if(modal){
+      modal.classList.remove('open');
+      // Stop video if playing
+      const video = modal.querySelector('.level-media-video');
+      if(video){
+        video.pause();
+        video.src = '';
+      }
+    }
+  }
+  
+  function closePresent(){
+    // Close overlay and immediately show TOC to prevent background flash
+    overlay.classList.remove('open');
+    // Open TOC immediately without delay
+    openToc();
+    currentMode = 'manifesto'; // Reset mode
+    // Keep body in presenting mode to maintain overlay background
+    document.body.classList.add('presenting');
+  }
+
+  function next(){ idx = (idx+1) % SLIDES.length; render(); }
+  function prev(){ idx = (idx-1 + SLIDES.length) % SLIDES.length; render(); }
+
+  closeBtn.addEventListener('click', closePresent);
+  nextBtn.addEventListener('click', (e)=>{ e.stopPropagation(); next(); });
+  prevBtn.addEventListener('click', (e)=>{ e.stopPropagation(); prev(); });
+
+  // clicking inside the central text/wrap triggers a zoom-in animation then advances to next
+  let _presentAnimating = false;
+  overlay.addEventListener('click', (e)=>{
+    if(!e.target.closest('.manifesto-present-wrap')) return;
+    if(_presentAnimating) return;
+    _presentAnimating = true;
+    const wrap = overlay.querySelector('.manifesto-present-wrap');
+    const txt = presentText;
+
+    // compute zoom duration that gets faster as the presentation progresses
+    const base = 420; const step = 60; // ms
+    const zoomDuration = Math.max(120, base - (idx * step));
+
+    // apply inline transition durations to make the zoom feel responsive
+    wrap.style.transition = `transform ${zoomDuration}ms cubic-bezier(.2,.9,.2,1)`;
+    txt.style.transition = `transform ${Math.round(zoomDuration*0.95)}ms cubic-bezier(.2,.9,.2,1), opacity ${Math.round(zoomDuration*0.7)}ms linear`;
+
+    // start zoom-in animation
+    wrap.classList.add('zooming'); txt.classList.add('zooming');
+
+    // advance the slide after the zoomDuration elapses, then reset animation state
+    setTimeout(()=>{
+      next();
+      txt.classList.remove('zooming');
+      const wrapResetDelay = Math.max(80, zoomDuration - 120);
+      setTimeout(()=>{
+        wrap.classList.remove('zooming');
+        wrap.style.transition = '';
+        txt.style.transition = '';
+        _presentAnimating = false;
+      }, wrapResetDelay);
+    }, zoomDuration);
+  });
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closePresent();
+    if(e.key === 'ArrowRight') next();
+    if(e.key === 'ArrowLeft') prev();
+  });
+
+  // Presentation: pinch-to-zoom (touch) and ctrl/meta+wheel (desktop) to navigate
+  // Attach handlers at document level but only respond when overlay is open
+  (function(){
+    let pinchStart = 0;
+    function dist(touches){
+      const a = touches[0]; const b = touches[1];
+      const dx = a.clientX - b.clientX; const dy = a.clientY - b.clientY;
+      return Math.hypot(dx, dy);
+    }
+
+    window.addEventListener('touchstart', (e)=>{
+      const overlay = document.querySelector('.present-overlay.open');
+      if(!overlay) return;
+      if(e.touches && e.touches.length === 2){
+        pinchStart = dist(e.touches);
+      }
+    }, {passive:true});
+
+    window.addEventListener('touchmove', (e)=>{
+      const overlay = document.querySelector('.present-overlay.open');
+      if(!overlay) return;
+      if(e.touches && e.touches.length === 2 && pinchStart > 0){
+        const d = dist(e.touches);
+        const scale = d / pinchStart;
+        if(scale > 1.15){ // pinch out (zoom in) -> next
+          const nextBtn = overlay.querySelector('.present-btn.next');
+          nextBtn && nextBtn.click();
+          pinchStart = 0;
+        } else if(scale < 0.85){ // pinch in (zoom out) -> prev
+          const prevBtn = overlay.querySelector('.present-btn.prev');
+          prevBtn && prevBtn.click();
+          pinchStart = 0;
+        }
+      }
+    }, {passive:true});
+
+    window.addEventListener('touchend', (e)=>{ pinchStart = 0; }, {passive:true});
+
+    // Desktop: detect ctrl/meta + wheel (typical browser zoom gesture) and use it to navigate
+    window.addEventListener('wheel', (e)=>{
+      const overlay = document.querySelector('.present-overlay.open');
+      if(!overlay) return;
+      if(e.ctrlKey || e.metaKey){
+        e.preventDefault();
+        if(e.deltaY < 0) { // wheel up while ctrl -> zoom in
+          const nextBtn = overlay.querySelector('.present-btn.next'); nextBtn && nextBtn.click();
+        } else { // wheel down -> zoom out
+          const prevBtn = overlay.querySelector('.present-btn.prev'); prevBtn && prevBtn.click();
+        }
+      }
+    }, {passive:false});
+  })();
+
+  // Smooth scroll for in-page anchors
+  document.documentElement.style.scrollBehavior = 'smooth';
+
+  // Click-to-advance for page sections: clicking a section jumps to the next section
+  (function(){
+    const overlayOpen = ()=> !!document.querySelector('.present-overlay.open');
+    const hero = document.querySelector('.hero');
+    const manifestoSec = document.getElementById('manifesto');
+    const artistSec = document.getElementById('artist');
+    const levelsSec = document.getElementById('levels');
+    const pageSections = [hero, manifestoSec, artistSec, levelsSec].filter(Boolean);
+
+    pageSections.forEach((sec, i)=>{
+      sec.addEventListener('click', (e)=>{
+        // ignore clicks on interactive controls or when overlay is open
+        if(overlayOpen()) return;
+        if(e.target.closest('a,button,input,textarea')) return;
+        // if hero was clicked, play zoom animation then open Manifesto overlay
+        if(sec === hero){
+          const heroZoomDur = 420;
+          hero.classList.add('hero-zooming');
+          setTimeout(()=>{
+            hero.classList.remove('hero-zooming');
+            // open TOC overlay after zoom (pass-through effect)
+            if(typeof openToc === 'function') openToc();
+          }, heroZoomDur);
+          return;
+        }
+        // if clicked the manifesto highlighted sentence, let its handler run (it stops propagation)
+        const next = pageSections[i+1];
+        if(next){ next.scrollIntoView({behavior:'smooth', block:'start'}); }
+      });
+    });
+  })();
+
+  // Background video setup and parallax on scroll
+  const bgVideo = document.querySelector('.bg-video');
+  if(bgVideo){
+    // Ensure video loads and plays
+    bgVideo.addEventListener('loadeddata', ()=>{
+      bgVideo.play().catch(e=> console.log('Video autoplay prevented:', e));
+    });
+    bgVideo.addEventListener('error', (e)=>{
+      console.error('Video load error:', e);
+      // Fallback to background image if video fails
+      document.body.style.backgroundImage = "url('background.jpg')";
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundPosition = 'center';
+      document.body.style.backgroundAttachment = 'fixed';
+    });
+    // Force play attempt
+    bgVideo.play().catch(e=> {
+      console.log('Initial play attempt failed, will retry on user interaction');
+    });
+  }
+
+  // Background parallax on scroll (subtle) - for video
+  let lastScroll = window.scrollY;
+  window.addEventListener('scroll', ()=>{
+    const y = window.scrollY;
+    // subtle background movement for video
+    if(bgVideo) {
+      bgVideo.style.transform = `translateY(${-y*0.03}px)`;
+    }
+    lastScroll = y;
+  }, {passive:true});
+
+  // level-card tilt microinteraction
+  const cards = document.querySelectorAll('.level-card');
+  cards.forEach(card=>{
+    card.addEventListener('mousemove', (e)=>{
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      const rotY = (px - 0.5) * 8; // -4 to 4 deg
+      const rotX = (0.5 - py) * 6;
+      card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(6px)`;
+    });
+    card.addEventListener('mouseleave', ()=>{ card.style.transform = ''; });
+  });
+
+})();
+</script>
+</html>
