@@ -136,14 +136,10 @@
     .purpose-content a:hover{color:#fff;border-bottom-color:#fff;text-shadow:0 0 15px rgba(204,255,0,0.6)}
     .purpose-content img{width:100%;max-width:100%;height:auto;border-radius:16px;margin:32px 0;opacity:0;transform:translateY(20px) scale(0.98);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1);box-shadow:0 8px 32px rgba(0,0,0,0.3);object-fit:cover}
     .purpose-content img.visible{opacity:1;transform:translateY(0) scale(1)}
-    .purpose-image-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0;margin:32px 0;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1);overflow:hidden;border-radius:16px}
+    .purpose-image-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:24px 0;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
     .purpose-image-grid.visible{opacity:1;transform:translateY(0)}
-    .purpose-image-grid img{width:100%;height:auto;border-radius:0;margin:0;box-shadow:none;object-fit:cover;display:block}
-    .purpose-image-grid img:nth-child(1){border-top-left-radius:16px}
-    .purpose-image-grid img:nth-child(2){border-top-right-radius:16px}
-    .purpose-image-grid img:nth-child(3){border-bottom-left-radius:16px}
-    .purpose-image-grid img:nth-child(4){border-bottom-right-radius:16px}
-    .purpose-image-grid img:nth-child(5){grid-column:1/-1;max-width:50%;margin:0 auto;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.3)}
+    .purpose-image-grid img{width:100%;height:auto;border-radius:16px;margin:0;box-shadow:0 8px 32px rgba(0,0,0,0.3);object-fit:cover;display:block}
+    .purpose-image-grid img:nth-child(5){grid-column:1/-1;max-width:50%;margin:16px auto 0;border-radius:16px}
     @media (max-width:768px){.purpose-image-grid{grid-template-columns:1fr}.purpose-image-grid img:nth-child(5){max-width:100%}}
     .artist-profile{background:rgba(255,255,255,0.02);backdrop-filter:blur(15px) saturate(150%);-webkit-backdrop-filter:blur(15px) saturate(150%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:32px;margin:24px 0;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
     .artist-profile.visible{opacity:1;transform:translateY(0)}
@@ -313,6 +309,21 @@
     /* hero zoom animation for click -> zoom -> manifesto */
     .hero.hero-zooming{transform-origin:center center;transition:transform .42s cubic-bezier(.2,.9,.2,1),filter .42s;transform:scale(1.04)}
     .hero.hero-zooming .hero-title{filter:blur(0.6px)}
+    
+    /* Print styles - 모든 콘텐츠 표시 */
+    @media print{
+      *{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}
+      body{background:#fff !important;overflow:visible !important}
+      .bg-video,.orb-container,.cursor-dot,.cursor-outline{display:none !important}
+      .hero{page-break-after:always;min-height:auto;padding:40px 20px;position:relative !important}
+      .toc-overlay,.present-overlay{position:relative !important;opacity:1 !important;display:block !important;background:transparent !important;page-break-after:always;z-index:auto !important}
+      .toc-overlay .stage,.present-overlay .purpose-content-wrap{position:relative !important;max-width:100% !important;transform:none !important;opacity:1 !important;display:block !important}
+      .toc-list li,.purpose-content-wrap,.artist-profile,.levels-grid{opacity:1 !important;transform:none !important;display:block !important}
+      .toc-close,.present-close,.purpose-next-btn,.toc-print-btn{display:none !important}
+      .purpose-content-wrap{page-break-inside:avoid;margin:20px 0}
+      .purpose-section,.purpose-quote,.artist-profile-item{page-break-inside:avoid}
+      img{max-width:100% !important;page-break-inside:avoid}
+    }
   </style>
 </head>
 <body>
@@ -631,7 +642,35 @@
   toc.addEventListener('click', (e)=>{ if(e.target === toc) closeToc(); });
   tocPrintBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    window.print();
+    // 인쇄 전 모든 콘텐츠를 표시하기 위한 준비
+    // 모든 오버레이와 콘텐츠를 보이게 설정
+    const allContentWraps = document.querySelectorAll('.purpose-content-wrap');
+    allContentWraps.forEach(wrap => {
+      wrap.style.display = 'block';
+      wrap.style.opacity = '1';
+      wrap.style.transform = 'none';
+    });
+    // 목차도 표시
+    if(toc) {
+      toc.style.display = 'block';
+      toc.style.opacity = '1';
+    }
+    // 약간의 지연 후 인쇄 (렌더링 완료 대기)
+    setTimeout(() => {
+      window.print();
+      // 인쇄 후 원래 상태로 복원
+      setTimeout(() => {
+        allContentWraps.forEach(wrap => {
+          wrap.style.display = '';
+          wrap.style.opacity = '';
+          wrap.style.transform = '';
+        });
+        if(toc) {
+          toc.style.display = '';
+          toc.style.opacity = '';
+        }
+      }, 100);
+    }, 100);
   });
   
   // Handle TOC item clicks
