@@ -455,7 +455,7 @@
           <a href="https://rollingstone.co.kr/main/$/21209" target="_blank" rel="noopener noreferrer" style="margin-top:12px;display:inline-block;">Rolling Stone Korea 기사 보기 →</a>
         </p>
         <div class="purpose-section">
-          <p>그래서 프로젝트 안에 여러 개의 컨셉적인 테마를 가진 각각의 레벨을 제작을 하였다. 이는 하나의 스튜디오에 여러개의 세트장이 있는 효과를 낼 수 있다.</p>
+          <p>그래서 프로젝트 안에 여러 개의 컨셉적인 테마를 가진 각각의 레벨을 제작을 하였다. 이는 하나의 스튜디오에 여러개의 세트장이 있는 효과를 내는 것과 같다.</p>
         </div>
         <div class="purpose-image-grid">
           <img src="project-strategy-1.jpeg" alt="XR 콘서트 참고 이미지 1">
@@ -642,35 +642,8 @@
   toc.addEventListener('click', (e)=>{ if(e.target === toc) closeToc(); });
   tocPrintBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    // 인쇄 전 모든 콘텐츠를 표시하기 위한 준비
-    // 모든 오버레이와 콘텐츠를 보이게 설정
-    const allContentWraps = document.querySelectorAll('.purpose-content-wrap');
-    allContentWraps.forEach(wrap => {
-      wrap.style.display = 'block';
-      wrap.style.opacity = '1';
-      wrap.style.transform = 'none';
-    });
-    // 목차도 표시
-    if(toc) {
-      toc.style.display = 'block';
-      toc.style.opacity = '1';
-    }
-    // 약간의 지연 후 인쇄 (렌더링 완료 대기)
-    setTimeout(() => {
-      window.print();
-      // 인쇄 후 원래 상태로 복원
-      setTimeout(() => {
-        allContentWraps.forEach(wrap => {
-          wrap.style.display = '';
-          wrap.style.opacity = '';
-          wrap.style.transform = '';
-        });
-        if(toc) {
-          toc.style.display = '';
-          toc.style.opacity = '';
-        }
-      }, 100);
-    }, 100);
+    // PDF 파일을 브라우저에서 열기
+    window.open('XR_Concert_Presentation.pdf', '_blank');
   });
   
   // Handle TOC item clicks
