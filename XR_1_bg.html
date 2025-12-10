@@ -151,8 +151,11 @@
     .artist-profile-label{font-size:clamp(0.9rem,1.5vw,1rem);color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:600}
     .artist-profile-value{font-size:clamp(1.2rem,2vw,1.5rem);color:#fff;font-weight:500;line-height:1.6}
     .artist-profile-value strong{color:var(--accent-acid);font-weight:700}
-    .artist-profile-image{width:200px;height:200px;border-radius:50%;object-fit:cover;margin:0 auto 24px;display:block;border:3px solid rgba(204,255,0,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 0 8px rgba(255,255,255,0.02);opacity:0;transform:scale(0.8);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
+    .artist-profile-image-wrapper{text-align:center;margin-bottom:32px}
+    .artist-profile-image{width:200px;height:200px;border-radius:50%;object-fit:cover;margin:0 auto 16px;display:block;border:3px solid rgba(204,255,0,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 0 8px rgba(255,255,255,0.02);opacity:0;transform:scale(0.8);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
     .artist-profile.visible .artist-profile-image{opacity:1;transform:scale(1)}
+    .artist-profile-name{font-size:clamp(1.8rem,3vw,2.4rem);color:var(--accent-acid);font-weight:700;text-align:center;margin-top:16px;opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1);text-shadow:0 0 20px rgba(204,255,0,0.4)}
+    .artist-profile.visible .artist-profile-name{opacity:1;transform:translateY(0);transition-delay:0.2s}
     .artist-profile-link{display:inline-flex;align-items:center;gap:8px;color:var(--accent-acid);text-decoration:none;font-weight:700;border-bottom:2px solid var(--accent-acid);transition:all .3s ease;margin-top:16px;opacity:0;transform:translateY(4px)}
     .artist-profile.visible .artist-profile-link{opacity:1;transform:translateY(0);transition-delay:0.5s}
     .artist-profile-link:hover{color:#fff;border-bottom-color:#fff;text-shadow:0 0 15px rgba(204,255,0,0.6)}
@@ -452,10 +455,13 @@
         <div class="purpose-section">
           <div class="purpose-section-title">아티스트 소개</div>
           <div class="artist-profile">
-            <img src="deantrbl-profile.webp" alt="딘(Dean) 프로필" class="artist-profile-image">
+            <div class="artist-profile-image-wrapper">
+              <img src="deantrbl-profile.webp" alt="딘(Dean) 프로필" class="artist-profile-image">
+              <div class="artist-profile-name">딘(Dean)</div>
+            </div>
             <div class="artist-profile-item">
-              <div class="artist-profile-label">Name</div>
-              <div class="artist-profile-value"><strong>딘(Dean)</strong></div>
+              <div class="artist-profile-label">Genre</div>
+              <div class="artist-profile-value">RnB</div>
             </div>
             <div class="artist-profile-item">
               <div class="artist-profile-label">Genre</div>
@@ -463,7 +469,7 @@
             </div>
             <div class="artist-profile-item">
               <div class="artist-profile-label">Concept</div>
-              <div class="artist-profile-value">Distopia, 신비주의, <strong>&lt;1984&gt;</strong></div>
+              <div class="artist-profile-value">Distopia신비주의, <strong>&lt;1984&gt;</strong></div>
             </div>
             <div class="artist-profile-item">
               <div class="artist-profile-label">그 외 특징</div>
