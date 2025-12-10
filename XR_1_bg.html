@@ -110,6 +110,8 @@
     .purpose-content p{margin-bottom:28px;opacity:0.95;opacity:0;transform:translateX(-20px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.9,.2,1)}
     .purpose-content p.visible{opacity:0.95;transform:translateX(0)}
     .purpose-content p:first-of-type{font-size:clamp(1.4rem,2.5vw,1.8rem);font-weight:500;margin-bottom:40px}
+    .purpose-quote-label{font-size:clamp(0.9rem,1.5vw,1.1rem);color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;text-align:center;font-weight:600;opacity:0;transform:translateY(10px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.9,.2,1)}
+    .purpose-quote-label.visible{opacity:1;transform:translateY(0)}
     .purpose-quote{background:rgba(204,255,0,0.03);border-left:2px solid rgba(204,255,0,0.3);padding:28px 36px;margin:36px 0;border-radius:16px;font-size:clamp(1.4rem,2.5vw,1.8rem);font-weight:600;color:var(--accent-acid);font-style:italic;text-align:center;position:relative;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1),background .3s ease,backdrop-filter .3s ease,border-color .3s ease,box-shadow .3s ease;
       /* Glassmorphism for quote */
       backdrop-filter:blur(10px) saturate(150%);
@@ -129,6 +131,31 @@
     .purpose-quote:hover::after{opacity:1}
     .purpose-content strong{color:var(--accent-acid);font-weight:700;opacity:0;transform:scale(0.8);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.9,.2,1)}
     .purpose-content p.visible strong{opacity:1;transform:scale(1);animation:highlight 0.6s ease}
+    .purpose-content a{color:var(--accent-acid);text-decoration:none;font-weight:700;border-bottom:2px solid var(--accent-acid);transition:all .3s ease;opacity:0;transform:translateY(4px)}
+    .purpose-content p.visible a{opacity:1;transform:translateY(0)}
+    .purpose-content a:hover{color:#fff;border-bottom-color:#fff;text-shadow:0 0 15px rgba(204,255,0,0.6)}
+    .purpose-content img{width:100%;max-width:100%;height:auto;border-radius:16px;margin:32px 0;opacity:0;transform:translateY(20px) scale(0.98);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1);box-shadow:0 8px 32px rgba(0,0,0,0.3);object-fit:cover}
+    .purpose-content img.visible{opacity:1;transform:translateY(0) scale(1)}
+    .purpose-image-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin:32px 0;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
+    .purpose-image-grid.visible{opacity:1;transform:translateY(0)}
+    .purpose-image-grid img{width:100%;height:auto;border-radius:16px;margin:0;box-shadow:0 8px 32px rgba(0,0,0,0.3);object-fit:cover}
+    .artist-profile{background:rgba(255,255,255,0.02);backdrop-filter:blur(15px) saturate(150%);-webkit-backdrop-filter:blur(15px) saturate(150%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:32px;margin:24px 0;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
+    .artist-profile.visible{opacity:1;transform:translateY(0)}
+    .artist-profile-item{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.06);opacity:0;transform:translateX(-20px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.9,.2,1)}
+    .artist-profile-item:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+    .artist-profile.visible .artist-profile-item{opacity:1;transform:translateX(0)}
+    .artist-profile.visible .artist-profile-item:nth-child(1){transition-delay:0.1s}
+    .artist-profile.visible .artist-profile-item:nth-child(2){transition-delay:0.2s}
+    .artist-profile.visible .artist-profile-item:nth-child(3){transition-delay:0.3s}
+    .artist-profile.visible .artist-profile-item:nth-child(4){transition-delay:0.4s}
+    .artist-profile-label{font-size:clamp(0.9rem,1.5vw,1rem);color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:600}
+    .artist-profile-value{font-size:clamp(1.2rem,2vw,1.5rem);color:#fff;font-weight:500;line-height:1.6}
+    .artist-profile-value strong{color:var(--accent-acid);font-weight:700}
+    .artist-profile-image{width:200px;height:200px;border-radius:50%;object-fit:cover;margin:0 auto 24px;display:block;border:3px solid rgba(204,255,0,0.3);box-shadow:0 8px 32px rgba(0,0,0,0.4),0 0 0 8px rgba(255,255,255,0.02);opacity:0;transform:scale(0.8);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
+    .artist-profile.visible .artist-profile-image{opacity:1;transform:scale(1)}
+    .artist-profile-link{display:inline-flex;align-items:center;gap:8px;color:var(--accent-acid);text-decoration:none;font-weight:700;border-bottom:2px solid var(--accent-acid);transition:all .3s ease;margin-top:16px;opacity:0;transform:translateY(4px)}
+    .artist-profile.visible .artist-profile-link{opacity:1;transform:translateY(0);transition-delay:0.5s}
+    .artist-profile-link:hover{color:#fff;border-bottom-color:#fff;text-shadow:0 0 15px rgba(204,255,0,0.6)}
     @keyframes highlight{0%{text-shadow:0 0 0 rgba(204,255,0,0)}50%{text-shadow:0 0 20px rgba(204,255,0,0.8)}100%{text-shadow:0 0 0 rgba(204,255,0,0)}}
     .purpose-section{margin-top:40px;padding-top:32px;border-top:1px solid rgba(255,255,255,0.06);opacity:0;transform:translateY(40px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
     .purpose-section.visible{opacity:1;transform:translateY(0)}
@@ -377,9 +404,9 @@
       <h2 class="purpose-title">Purpose</h2>
       <div class="purpose-content">
         <p>언리얼엔진으로 구현하는 XR콘서트의 목적</p>
-        <p>언리얼엔진은 사실적인 표현과 맵 제작으로도 유명하지만, 현실과 가상을 넘나드는 도구로 쓰이기도 한다.</p>
-        <div class="purpose-quote">그렇다면 언리얼 환경에서 단상이 있는 XR 콘서트를 구현할 필요가 있는가?</div>
-        <p>'X'라고 생각한다. 그 이유는 크게 두가지가 있다.</p>
+        <p>언리얼엔진은 사진처럼 사실적인 고품질 그래픽을 실시간으로 구현할 수 있는 게임 엔진 프로그램이다. 따라서 XR콘서트에서 언리얼엔진을 사용하는 목적과 이유는 사실적인 공간을 재현하는 무대를 구성하며, 현실과 가상을 넘나들기 위함일 것이다.</p>
+          <div class="purpose-quote">그렇다면 언리얼 환경에서 단상이 있는 XR 콘서트를 구현할 필요가 있는가?</div>
+          <p><strong style="color:var(--accent-acid);font-weight:800;">'X'라고 생각한다.</strong> 그 이유는 크게 두가지가 있다.</p>
         <div class="purpose-section">
           <div class="purpose-section-title">첫번째</div>
           <p>리얼 타임으로 구현을 한다고 가정을 했을 때, 현재는 <strong style="color:var(--accent-acid);font-weight:800;">ICVFX</strong>, 즉 <strong style="color:var(--accent-acid);font-weight:800;">IN-Camera VFX 방식</strong>을 사용한 콘서트가 대다수이다 (이마저도 유튜브에 'XR콘서트'라고 검색어를 치면 참고할만한 자료가 3년 전.). 근데 이 <strong style="color:var(--accent-acid);font-weight:800;">ICVFX</strong> 스튜디오는 이미 <strong style="color:var(--accent-acid);font-weight:800;">LED 스크린으로 구성된 바닥과 벽이 이미 단상처럼 구성</strong>되어있다. 심지어 메인 조명도 언리얼 환경이 아닌 실제 환경에서 컨트롤 한다.</p>
@@ -398,9 +425,17 @@
     <div class="purpose-content-wrap project-strategy-wrap">
       <h2 class="purpose-title">Project Strategy</h2>
       <div class="purpose-content">
-        <p>그렇기 때문에, 현실에서 만들어낼 수 없는 (혹은 실제 환경에서 표현하기 어려운) 요소와 구성을 넣는 것이 필요하다고 생각함.</p>
+        <p>그렇기 때문에, 현실에서 만들어낼 수 없는 (혹은 실제 환경에서 표현하기 어려운) 요소와 구성을 넣는 것이 필요하다고 생각했다.</p>
+        <p style="margin-top:24px;">
+          <a href="https://www.instagram.com/p/DFCkAR1ytkA/" target="_blank" rel="noopener noreferrer">참고 자료 보기 →</a><br>
+          <a href="https://rollingstone.co.kr/main/$/21209" target="_blank" rel="noopener noreferrer" style="margin-top:12px;display:inline-block;">Rolling Stone Korea 기사 보기 →</a>
+        </p>
         <div class="purpose-section">
-          <p>그래서 프로젝트 안에 여러 개의 테마를 가진 각각의 레벨을 제작. = 하나의 스튜디오에 여러개의 세트장이 있는 효과</p>
+          <p>그래서 프로젝트 안에 여러 개의 컨셉적인 테마를 가진 각각의 레벨을 제작을 하였다. 이는 하나의 스튜디오에 여러개의 세트장이 있는 효과를 낼 수 있다.</p>
+        </div>
+        <div class="purpose-image-grid">
+          <img src="project-strategy-1.jpeg" alt="XR 콘서트 참고 이미지 1">
+          <img src="project-strategy-2.jpeg" alt="XR 콘서트 참고 이미지 2">
         </div>
       </div>
       <button class="purpose-next-btn">3. Artist</button>
@@ -413,12 +448,31 @@
       <h2 class="purpose-title">Artist</h2>
       <div class="purpose-content">
         <p>아티스트 소개 및 콘서트 로그라인</p>
-        <p>그런데 막상 만들려고 하니 막막하다!</p>
-        <p>그래서 아티스트와 그에 맞는 곡을 선정했다.</p>
+        <p>아티스트에 대한 조사를 한 뒤, 아티스트의 컨셉과 어울리는 콘서트 제작을 계획하였다.</p>
         <div class="purpose-section">
           <div class="purpose-section-title">아티스트 소개</div>
-          <p>아티스트에 대해 짧게 설명하면 이름은 <strong>딘(DEAN)</strong>이며, 한국에서 신비주의로 꼽히는 RnB 가수이다. 이 가수는 디스토피아적인 세계관을 선호한다. 예를 들어, 조지오웰의 <1984> 같은… . 인스타 계정 이름도 뒤에 trbl(Trouble)을 붙이며 '자신은 불안정함을 좋아한다." 라고 말을 한다.</p>
+          <div class="artist-profile">
+            <img src="deantrbl-profile.webp" alt="딘(Dean) 프로필" class="artist-profile-image">
+            <div class="artist-profile-item">
+              <div class="artist-profile-label">Name</div>
+              <div class="artist-profile-value"><strong>딘(Dean)</strong></div>
+            </div>
+            <div class="artist-profile-item">
+              <div class="artist-profile-label">Genre</div>
+              <div class="artist-profile-value">RnB</div>
+            </div>
+            <div class="artist-profile-item">
+              <div class="artist-profile-label">Concept</div>
+              <div class="artist-profile-value">Distopia, 신비주의, <strong>&lt;1984&gt;</strong></div>
+            </div>
+            <div class="artist-profile-item">
+              <div class="artist-profile-label">그 외 특징</div>
+              <div class="artist-profile-value">인스타 계정 이름도 뒤에 trbl(Trouble)을 붙이며 특유의 우울함을 추구</div>
+            </div>
+            <a href="https://www.instagram.com/deantrbl/" target="_blank" rel="noopener noreferrer" class="artist-profile-link">Instagram 프로필 보기 →</a>
+          </div>
         </div>
+        <div class="purpose-quote-label">콘서트 로그라인</div>
         <div class="purpose-quote">무너져가는 디스토피아에서 불안정함을 노래하다.</div>
       </div>
       <button class="purpose-next-btn">4. Levels</button>
@@ -815,6 +869,18 @@
       observer.observe(p);
     });
     
+    // Observe image grids
+    const imageGrids = purposeContent.querySelectorAll('.purpose-image-grid');
+    imageGrids.forEach(grid => observer.observe(grid));
+    
+    // Observe individual images
+    const images = purposeContent.querySelectorAll('img');
+    images.forEach(img => observer.observe(img));
+    
+    // Observe quote label
+    const quoteLabels = purposeContent.querySelectorAll('.purpose-quote-label');
+    quoteLabels.forEach(label => observer.observe(label));
+    
     // Observe quote (special attention)
     const quote = purposeContent.querySelector('.purpose-quote');
     if(quote){
@@ -834,6 +900,10 @@
       }, { threshold: 0.3 });
       quoteObserver.observe(quote);
     }
+    
+    // Observe artist profile
+    const artistProfiles = purposeContent.querySelectorAll('.artist-profile');
+    artistProfiles.forEach(profile => observer.observe(profile));
     
     // Observe sections
     const sections = purposeContent.querySelectorAll('.purpose-section');
