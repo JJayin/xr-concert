@@ -257,6 +257,9 @@
     .toc-list li:hover::before{width:450px;height:450px;opacity:1}
     .toc-list li:hover{color:var(--accent-acid);text-shadow:0 0 25px rgba(204,255,0,0.7),0 0 50px rgba(204,255,0,0.4),0 0 75px rgba(204,255,0,0.2)}
     .toc-close{position:absolute;right:20px;top:18px;background:transparent;border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer}
+    .toc-print-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--accent-acid);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:clamp(0.75rem,1.2vw,0.9rem);font-weight:500;margin-top:32px;opacity:0;transform:translateY(10px);transition:all .4s ease;font-family:var(--font-ui);text-transform:uppercase;letter-spacing:0.5px}
+    .toc-print-btn:hover{background:rgba(204,255,0,0.1);border-color:var(--accent-acid);color:#fff;text-shadow:0 0 10px rgba(204,255,0,0.5);transform:translateY(0)}
+    .toc-overlay.open .toc-print-btn{opacity:1;transform:translateY(0);transition-delay:0.8s}
 
     @media (max-width:700px){
       .stage-spot{width:260px;height:260px}
@@ -587,11 +590,13 @@
         <li data-idx="2">3. Artist</li>
         <li data-idx="3">4. Levels</li>
       </ul>
+      <button class="toc-print-btn" aria-label="PDF로 저장">📄 PDF로 저장</button>
     </div>
   `;
   document.body.appendChild(toc);
   const tocList = toc.querySelectorAll('.toc-list li');
   const tocClose = toc.querySelector('.toc-close');
+  const tocPrintBtn = toc.querySelector('.toc-print-btn');
 
   function openToc(){
     toc.classList.add('open');
@@ -620,6 +625,10 @@
   }
   tocClose.addEventListener('click', closeToc);
   toc.addEventListener('click', (e)=>{ if(e.target === toc) closeToc(); });
+  tocPrintBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    window.print();
+  });
   
   // Handle TOC item clicks
   tocList.forEach((li, index) => {
