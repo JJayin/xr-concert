@@ -369,7 +369,7 @@
 
   // Presentation overlay setup (hero-triggered)
   // Hardcoded manifesto text used as the primary slide content so page can be minimal.
-  const manifestoText = '그렇다면 언리얼 환경에서 단상이 있는 XR 콘서트를 굳이 구현할 필요가 있는가?';
+  const manifestoText = '그렇다면 언리얼 환경에서 단상이 있는 XR 콘서트를 구현할 필요가 있는가?';
 
   // Purpose content HTML
   const purposeContent = `
@@ -378,15 +378,15 @@
       <div class="purpose-content">
         <p>언리얼엔진으로 구현하는 XR콘서트의 목적</p>
         <p>언리얼엔진은 사실적인 표현과 맵 제작으로도 유명하지만, 현실과 가상을 넘나드는 도구로 쓰이기도 한다.</p>
-        <div class="purpose-quote">그렇다면…언리얼 환경에서 단상이 있는 XR 콘서트를 굳이 구현할 필요가 있는가?</div>
+        <div class="purpose-quote">그렇다면 언리얼 환경에서 단상이 있는 XR 콘서트를 구현할 필요가 있는가?</div>
         <p>'X'라고 생각한다. 그 이유는 크게 두가지가 있다.</p>
         <div class="purpose-section">
           <div class="purpose-section-title">첫번째</div>
-          <p>리얼 타임으로 구현을 한다고 가정을 했을 때, 현재는 <strong>ICVFX</strong>, 즉 인-카메라 VFX 방식을 사용한 콘서트가 대다수이다 (이마저도 유튜브에 'XR콘서트'라고 검색어를 치면 참고할만한 자료가 3년전이다…과도기라는 뜻이다…). 근데 이 ICVFX 스튜디오는 이미 LED 스크린으로 구성된 바닥과 벽이 이미 단상처럼 구성되어있다. 심지어 메인 조명도 언리얼 환경이 아닌 실제 환경에서 컨트롤 한다.</p>
+          <p>리얼 타임으로 구현을 한다고 가정을 했을 때, 현재는 <strong style="color:var(--accent-acid);font-weight:800;">ICVFX</strong>, 즉 <strong style="color:var(--accent-acid);font-weight:800;">IN-Camera VFX 방식</strong>을 사용한 콘서트가 대다수이다 (이마저도 유튜브에 'XR콘서트'라고 검색어를 치면 참고할만한 자료가 3년 전.). 근데 이 <strong style="color:var(--accent-acid);font-weight:800;">ICVFX</strong> 스튜디오는 이미 <strong style="color:var(--accent-acid);font-weight:800;">LED 스크린으로 구성된 바닥과 벽이 이미 단상처럼 구성</strong>되어있다. 심지어 메인 조명도 언리얼 환경이 아닌 실제 환경에서 컨트롤 한다.</p>
         </div>
         <div class="purpose-section">
           <div class="purpose-section-title">두번째</div>
-          <p>XR콘서트의 콘텐츠를 경험한다고 가정했을 때, 대부분 헤드마운트와 같이 현실을 단절하고, 가상의 세계 몰입할 수 있는 기기가 아직까지는 필요할 것이다. 이를 보았을 때, 콘텐츠를 소비하는 사람들은 '과연 현실에 있는 무대를 원할까?' 아니면 '현실에서 느낄 수 없는 다른 차원의 것을 원할까?' 이를 고민해보았을 때, 역시나 후자가 더 많을 것이다.</p>
+          <p>XR콘서트의 콘텐츠를 제공할 때, 대부분의 소비자들은 헤드마운트와 같은 기기를 사용할 것이다. 이를 보았을 때, 콘텐츠를 소비하는 사람들은 '<strong style="color:var(--accent-acid);font-weight:800;">과연 현실에 있는 무대를 원할까?</strong>' 아니면 '<strong style="color:var(--accent-acid);font-weight:800;">현실에서 느낄 수 없는 다른 차원의 것을 원할까?</strong>' 이를 고민해보았을 때, 역시나 후자가 더 많을 것이다.</p>
         </div>
       </div>
       <button class="purpose-next-btn">2. Project Strategy</button>
@@ -734,12 +734,12 @@
       if(prevBtn) prevBtn.style.display = 'block';
       if(nextBtn) nextBtn.style.display = 'block';
       
-      const slide = SLIDES[idx] || { content: '' };
+    const slide = SLIDES[idx] || { content: '' };
       if(presentText) presentText.textContent = slide.content || '';
       if(counter) counter.textContent = `${idx+1} / ${SLIDES.length}`;
-      const pct = ((idx+1) / SLIDES.length) * 100;
+    const pct = ((idx+1) / SLIDES.length) * 100;
       if(progressFill) progressFill.style.width = pct + '%';
-      // active thumb
+    // active thumb
       if(thumbs) thumbs.querySelectorAll('.present-thumb').forEach((t, ti)=> t.classList.toggle('active', ti === idx));
     }
   }
