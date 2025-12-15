@@ -89,7 +89,7 @@
     .manifesto-present-wrap{position:relative;max-width:1100px;padding:36px 48px;border-radius:12px;display:flex;align-items:center;justify-content:center}
     .manifesto-present-text{color:var(--accent-acid);font-weight:800;font-family:var(--font-head);font-size:clamp(2rem,7vw,5rem);line-height:1;text-align:center;padding:8px;transform:translateY(8px) scale(.98);opacity:0;transition:transform .36s cubic-bezier(.2,.9,.2,1),opacity .36s}
     /* Purpose content style */
-    .purpose-content-wrap{position:relative;max-width:900px;padding:60px 48px;border-radius:24px;max-height:85vh;overflow-y:auto;transform:translateY(20px);opacity:0;transition:transform .4s cubic-bezier(.2,.9,.2,1),opacity .4s,background .3s ease,backdrop-filter .3s ease,border-color .3s ease,box-shadow .3s ease;display:none;
+    .purpose-content-wrap{position:relative;max-width:900px;padding:60px 48px;border-radius:24px;max-height:85vh;overflow-y:auto;opacity:0;transition:opacity .4s,background .3s ease,backdrop-filter .3s ease,border-color .3s ease,box-shadow .3s ease;display:none;
       /* Glassmorphism effect - more transparent */
       background:rgba(255,255,255,0.02);
       backdrop-filter:blur(20px) saturate(180%);
@@ -97,7 +97,7 @@
       border:1px solid rgba(255,255,255,0.08);
       box-shadow:0 8px 32px rgba(0,0,0,0.1),inset 0 1px 0 rgba(255,255,255,0.1);
     }
-    .present-overlay.open .purpose-content-wrap{transform:none;opacity:1;display:block}
+    .present-overlay.open .purpose-content-wrap{opacity:1;display:block}
     .purpose-content-wrap:hover{background:rgba(255,255,255,0.04);
       backdrop-filter:blur(25px) saturate(200%) brightness(1.1);
       -webkit-backdrop-filter:blur(25px) saturate(200%) brightness(1.1);
@@ -140,6 +140,8 @@
     .purpose-image-grid.visible{opacity:1;transform:translateY(0)}
     .purpose-image-grid img{width:100%;height:auto;border-radius:16px;margin:0;box-shadow:0 8px 32px rgba(0,0,0,0.3);object-fit:cover;display:block}
     .purpose-image-grid img:nth-child(5){grid-column:1/-1;max-width:50%;margin:16px auto 0;border-radius:16px}
+    .purpose-image-grid.asset-grid img{aspect-ratio:1/1;height:auto;object-fit:cover}
+    .purpose-image-grid.asset-grid img:nth-child(5){grid-column:auto;max-width:100%;margin:0}
     @media (max-width:768px){.purpose-image-grid{grid-template-columns:1fr}.purpose-image-grid img:nth-child(5){max-width:100%}}
     .artist-profile{background:rgba(255,255,255,0.02);backdrop-filter:blur(15px) saturate(150%);-webkit-backdrop-filter:blur(15px) saturate(150%);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:32px;margin:24px 0;opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.9,.2,1)}
     .artist-profile.visible{opacity:1;transform:translateY(0)}
@@ -201,7 +203,9 @@
       .levels-grid{grid-template-columns:1fr;gap:24px}
     }
     /* Next TOC button - same style as TOC items */
-    .purpose-next-btn{font-family:var(--font-head);color:var(--text-main);font-size:clamp(2rem,5vw,4.5rem);position:relative;cursor:pointer;padding:24px 48px;border-radius:16px;z-index:1;transform-style:preserve-3d;text-align:center;width:100%;margin-top:60px;opacity:0;transform:translateY(20px) scale(.992);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.2,1),color .3s ease,text-shadow .3s ease,filter .4s ease,background .3s ease,backdrop-filter .3s ease,border-color .3s ease,box-shadow .3s ease;
+    .purpose-nav-buttons{display:flex;justify-content:space-between;gap:16px;margin-top:60px;width:100%}
+    .purpose-nav-buttons.visible .purpose-nav-btn{opacity:1;transform:none}
+    .purpose-nav-btn{font-family:var(--font-head);color:var(--text-main);font-size:clamp(1.2rem,2.5vw,2rem);position:relative;cursor:pointer;padding:16px 32px;border-radius:16px;z-index:1;transform-style:preserve-3d;text-align:center;opacity:0;transform:translateY(20px) scale(.992);transition:opacity .5s ease,transform .6s cubic-bezier(.2,.9,.2,1),color .3s ease,text-shadow .3s ease,filter .4s ease,background .3s ease,backdrop-filter .3s ease,border-color .3s ease,box-shadow .3s ease;
       /* Glassmorphism effect */
       background:rgba(255,255,255,0.03);
       backdrop-filter:blur(15px) saturate(150%);
@@ -209,19 +213,22 @@
       border:1px solid rgba(255,255,255,0.1);
       box-shadow:0 4px 20px rgba(0,0,0,0.08),inset 0 1px 0 rgba(255,255,255,0.1);
     }
-    .purpose-next-btn.visible{opacity:1;transform:none}
-    .purpose-next-btn{--spotlight-x: 50%; --spotlight-y: 50%;}
-    .purpose-next-btn::before{content:'';position:absolute;left:var(--spotlight-x);top:var(--spotlight-y);transform:translate(-50%,-50%);width:0;height:0;border-radius:50%;background:radial-gradient(circle, rgba(255,255,220,0.85) 0%, rgba(255,255,220,0.35) 25%, rgba(255,255,220,0.1) 40%, transparent 70%);filter:blur(45px);opacity:0;transition:width .5s cubic-bezier(.2,.9,.2,1),height .5s cubic-bezier(.2,.9,.2,1),opacity .4s ease,left .15s ease,top .15s ease;pointer-events:none;z-index:-1}
-    .purpose-next-btn:hover::before{width:450px;height:450px;opacity:1}
-    .purpose-next-btn::after{content:'';position:absolute;inset:0;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0.05) 50%,transparent 100%);opacity:0;transition:opacity .3s ease;pointer-events:none;z-index:0}
-    .purpose-next-btn:hover::after{opacity:1}
-    .purpose-next-btn:hover{color:var(--accent-acid);text-shadow:0 0 25px rgba(204,255,0,0.7),0 0 50px rgba(204,255,0,0.4),0 0 75px rgba(204,255,0,0.2);
+    .purpose-nav-btn{--spotlight-x: 50%; --spotlight-y: 50%;}
+    .purpose-nav-btn::before{content:'';position:absolute;left:var(--spotlight-x);top:var(--spotlight-y);transform:translate(-50%,-50%);width:0;height:0;border-radius:50%;background:radial-gradient(circle, rgba(255,255,220,0.85) 0%, rgba(255,255,220,0.35) 25%, rgba(255,255,220,0.1) 40%, transparent 70%);filter:blur(45px);opacity:0;transition:width .5s cubic-bezier(.2,.9,.2,1),height .5s cubic-bezier(.2,.9,.2,1),opacity .4s ease,left .15s ease,top .15s ease;pointer-events:none;z-index:-1}
+    .purpose-nav-btn:hover::before{width:450px;height:450px;opacity:1}
+    .purpose-nav-btn::after{content:'';position:absolute;inset:0;border-radius:16px;background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,rgba(255,255,255,0.05) 50%,transparent 100%);opacity:0;transition:opacity .3s ease;pointer-events:none;z-index:0}
+    .purpose-nav-btn:hover::after{opacity:1}
+    .purpose-nav-btn:hover{color:var(--accent-acid);text-shadow:0 0 25px rgba(204,255,0,0.7),0 0 50px rgba(204,255,0,0.4),0 0 75px rgba(204,255,0,0.2);
       background:rgba(255,255,255,0.08);
       backdrop-filter:blur(20px) saturate(200%) brightness(1.2);
       -webkit-backdrop-filter:blur(20px) saturate(200%) brightness(1.2);
       border-color:rgba(255,255,255,0.25);
       box-shadow:0 6px 30px rgba(204,255,0,0.15),inset 0 2px 8px rgba(255,255,255,0.3),inset 0 -1px 0 rgba(255,255,255,0.1);
     }
+    .purpose-nav-btn:disabled{opacity:0.3;cursor:not-allowed;pointer-events:none}
+    .purpose-nav-prev{margin-right:auto}
+    .purpose-nav-next{margin-left:auto}
+    @media (max-width:768px){.purpose-nav-buttons{flex-direction:column;gap:12px}.purpose-nav-btn{width:100%}.purpose-nav-prev,.purpose-nav-next{margin:0}}
     /* zoom animation classes */
     .manifesto-present-wrap.zooming{transform:scale(1.06);transition:transform .36s cubic-bezier(.2,.9,.2,1)}
     .manifesto-present-text.zooming{transform:scale(1.08) translateY(-6px);opacity:0.14;transition:transform .36s cubic-bezier(.2,.9,.2,1),opacity .28s}
@@ -319,7 +326,7 @@
       .toc-overlay,.present-overlay{position:relative !important;opacity:1 !important;display:block !important;background:transparent !important;page-break-after:always;z-index:auto !important}
       .toc-overlay .stage,.present-overlay .purpose-content-wrap{position:relative !important;max-width:100% !important;transform:none !important;opacity:1 !important;display:block !important}
       .toc-list li,.purpose-content-wrap,.artist-profile,.levels-grid{opacity:1 !important;transform:none !important;display:block !important}
-      .toc-close,.present-close,.purpose-next-btn,.toc-print-btn{display:none !important}
+      .toc-close,.present-close,.purpose-nav-buttons,.toc-print-btn{display:none !important}
       .purpose-content-wrap{page-break-inside:avoid;margin:20px 0}
       .purpose-section,.purpose-quote,.artist-profile-item{page-break-inside:avoid}
       img{max-width:100% !important;page-break-inside:avoid}
@@ -354,6 +361,43 @@
   <!-- Content below hero removed per request -->
 </body>
 <script>
+// Helper function for debug logging (kept for debug mode)
+function debugLog(location, message, data, hypothesisId = 'A') {
+  fetch('http://127.0.0.1:7242/ingest/adde1938-5c03-4722-845b-a8d5d8f3bd1e',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      location:location,
+      message:message,
+      data:data,
+      timestamp:Date.now(),
+      sessionId:'debug-session',
+      runId:'run1',
+      hypothesisId:hypothesisId
+    })
+  }).catch(()=>{});
+}
+
+// Global error handler for debugging
+window.addEventListener('error', (e) => {
+  debugLog(e.filename+':'+e.lineno, 'Global error', {
+    error:e.message,
+    stack:e.error?e.error.stack:'',
+    filename:e.filename,
+    lineno:e.lineno
+  });
+  console.error('Global error:', e);
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+  debugLog('unhandledrejection', 'Unhandled promise rejection', {
+    error:e.reason?e.reason.toString():'unknown',
+    stack:e.reason?e.reason.stack:'',
+    promise:e.promise
+  });
+  console.error('Unhandled promise rejection:', e);
+});
+
 // Mantis-like interactivity: cursor, parallax and reveal-on-scroll
 (function(){
   const cursorDot = document.querySelector('.cursor-dot');
@@ -428,19 +472,22 @@
       <h2 class="purpose-title">Purpose</h2>
       <div class="purpose-content">
         <p>언리얼엔진으로 구현하는 XR콘서트의 목적</p>
-        <p>언리얼엔진은 사진처럼 사실적인 고품질 그래픽을 실시간으로 구현할 수 있는 게임 엔진 프로그램이다. 따라서 XR콘서트에서 언리얼엔진을 사용하는 목적과 이유는 사실적인 공간을 재현하는 무대를 구성하며, 현실과 가상을 넘나들기 위함일 것이다.</p>
+        <p>언리얼 엔진은 실사 수준의 고품질 그래픽을 실시간으로 구현할 수 있는 리얼타임 3D 제작 플랫폼이다. 따라서 XR 콘서트에서 언리얼 엔진을 사용하는 주된 목적은 물리적 시공간의 제약을 넘어 사실적인 공간을 재현하고, 현실과 가상을 자연스럽게 융합하는 데 있다.</p>
           <div class="purpose-quote">그렇다면 언리얼 환경에서 단상이 있는 XR 콘서트를 구현할 필요가 있는가?</div>
           <p><strong style="color:var(--accent-acid);font-weight:800;">'X'라고 생각한다.</strong> 그 이유는 크게 두가지가 있다.</p>
         <div class="purpose-section">
           <div class="purpose-section-title">첫번째</div>
-          <p>리얼 타임으로 구현을 한다고 가정을 했을 때, 현재는 <strong style="color:var(--accent-acid);font-weight:800;">ICVFX</strong>, 즉 <strong style="color:var(--accent-acid);font-weight:800;">IN-Camera VFX 방식</strong>을 사용한 콘서트가 대다수이다 (이마저도 유튜브에 'XR콘서트'라고 검색어를 치면 참고할만한 자료가 3년 전.). 근데 이 <strong style="color:var(--accent-acid);font-weight:800;">ICVFX</strong> 스튜디오는 이미 <strong style="color:var(--accent-acid);font-weight:800;">LED 스크린으로 구성된 바닥과 벽이 이미 단상처럼 구성</strong>되어있다. 심지어 메인 조명도 언리얼 환경이 아닌 실제 환경에서 컨트롤 한다.</p>
+          <p>ICVFX(In-Camera VFX) 제작 환경의 기술적 특성이다. 리얼타임 렌더링을 전제로 할 때, 현재 대다수의 XR 콘서트는 <strong style="color:var(--accent-acid);font-weight:800;">ICVFX 방식</strong>을 채택하고 있다. 이러한 스튜디오 환경은 이미 바닥과 벽면이 거대한 <strong style="color:var(--accent-acid);font-weight:800;">LED 스크린으로 구성</strong>되어 있어, 공간 자체가 하나의 거대한 디지털 단상 역할을 수행하고 있다. 심지어 메인 조명 제어 또한 언리얼 엔진의 가상 환경이 아닌 실제 환경에서 운용되고 있다. 즉, 이미 스튜디오의 하드웨어 자체가 무대의 기능을 완벽히 대체하고 있으므로 별도의 가상의 단상은 불필요하다는 점을 알 수 있다.</p>
         </div>
         <div class="purpose-section">
           <div class="purpose-section-title">두번째</div>
-          <p>XR콘서트의 콘텐츠를 제공할 때, 대부분의 소비자들은 헤드마운트와 같은 기기를 사용할 것이다. 이를 보았을 때, 콘텐츠를 소비하는 사람들은 '<strong style="color:var(--accent-acid);font-weight:800;">과연 현실에 있는 무대를 원할까?</strong>' 아니면 '<strong style="color:var(--accent-acid);font-weight:800;">현실에서 느낄 수 없는 다른 차원의 것을 원할까?</strong>' 이를 고민해보았을 때, 역시나 후자가 더 많을 것이다.</p>
+          <p>XR 콘텐츠 소비자의 니즈(Needs)와 경험적 측면이다. XR 콘서트를 소비하는 관객은 대부분 <strong style="color:var(--accent-acid);font-weight:800;">HMD(헤드마운트 디스플레이)</strong>와 같은 몰입형 기기를 사용할 가능성이 높다. 이러한 사용자들은 현실에 존재하는 무대의 단순한 재현보다는, 현실에서는 경험할 수 없는 새로운 차원의 시각적 자극을 원한다. 따라서 현실의 물리적 제약을 상징하는 단상을 배치하는 것보다, <strong style="color:var(--accent-acid);font-weight:800;">가상의 무한한 가능성을 보여주는 것</strong>이 소비자가 원하는 콘텐츠의 본질에 더 부합한다고 볼 수 있다.</p>
         </div>
       </div>
-      <button class="purpose-next-btn">2. Project Strategy</button>
+      <div class="purpose-nav-buttons">
+        <button class="purpose-nav-btn purpose-nav-prev" disabled style="opacity:0.3;">1. Purpose</button>
+        <button class="purpose-nav-btn purpose-nav-next" data-next="project-strategy">2. Project Strategy</button>
+      </div>
     </div>
   `;
 
@@ -449,15 +496,32 @@
     <div class="purpose-content-wrap project-strategy-wrap">
       <h2 class="purpose-title">Project Strategy</h2>
       <div class="purpose-content">
-        <p>그렇기 때문에, 현실에서 만들어낼 수 없는 (혹은 실제 환경에서 표현하기 어려운) 요소와 구성을 넣는 것이 필요하다고 생각했다.</p>
+        <p>이러한 이유로 현실에서는 구현이 불가능하거나 물리적 제약으로 인해 표현하기 어려운 요소와 구성을 과감하게 반영하고자 했다.</p>
         <p style="margin-top:24px;">
           <a href="https://www.instagram.com/p/DFCkAR1ytkA/" target="_blank" rel="noopener noreferrer">참고 자료 보기 →</a><br>
           <a href="https://rollingstone.co.kr/main/$/21209" target="_blank" rel="noopener noreferrer" style="margin-top:12px;display:inline-block;">Rolling Stone Korea 기사 보기 →</a>
         </p>
         <div class="purpose-section">
-          <p>그래서 프로젝트 안에 여러 개의 컨셉적인 테마를 가진 각각의 레벨을 제작을 하였다. 이는 하나의 스튜디오에 여러개의 세트장이 있는 효과를 내는 것과 같다.</p>
+          <p>이를 위해 프로젝트 내에 각기 다른 컨셉과 테마를 지닌 여러 레벨을 구축했다. 이는 마치 하나의 스튜디오 안에 다양한 세트장이 공존하는 것과 같은 시각적 다양성을 제공한다.</p>
+          <p style="margin-top:24px;">또한, 작업 효율을 극대화하기 위해 에셋 제작 과정에 3D 생성형 AI를 적극 도입했다. 'Varco 3D' 프로그램을 활용하였으며, 이를 통해 제작한 주요 에셋은 다음과 같다.</p>
         </div>
-        <div class="purpose-image-grid">
+        <p style="margin-top:48px;text-align:left;font-size:18px;color:#ffffff;font-weight:700;opacity:0.95;">[Varco 3D로 제작한 Asset]</p>
+        <div class="purpose-image-grid asset-grid" style="margin-top:24px;">
+          <img src="project-strategy-6.png" alt="XR 콘서트 에셋 이미지 6">
+          <img src="project-strategy-7.png" alt="XR 콘서트 에셋 이미지 7">
+          <img src="project-strategy-8.png" alt="XR 콘서트 에셋 이미지 8">
+          <img src="project-strategy-9.png" alt="XR 콘서트 에셋 이미지 9">
+          <img src="project-strategy-10.png" alt="XR 콘서트 에셋 이미지 10">
+          <img src="project-strategy-11.png" alt="XR 콘서트 에셋 이미지 11">
+          <img src="project-strategy-12.png" alt="XR 콘서트 에셋 이미지 12">
+          <img src="project-strategy-13.png" alt="XR 콘서트 에셋 이미지 13">
+          <img src="project-strategy-14.png" alt="XR 콘서트 에셋 이미지 14">
+          <img src="project-strategy-15.png" alt="XR 콘서트 에셋 이미지 15">
+        </div>
+        <p style="margin-top:24px;"></p>
+        <p style="margin-top:48px;text-align:left;font-size:18px;color:#ffffff;font-weight:700;opacity:0.95;">[참고한 XR 콘서트의 레퍼런스 & Scene 의 Mood]</p>
+        <p style="margin-top:12px;text-align:left;font-size:14px;color:#ffffff;opacity:0.8;">#Openworld #XR #Concert #Dystopia #Fantasy</p>
+        <div class="purpose-image-grid" style="margin-top:24px;">
           <img src="project-strategy-1.jpeg" alt="XR 콘서트 참고 이미지 1">
           <img src="project-strategy-2.jpeg" alt="XR 콘서트 참고 이미지 2">
           <img src="project-strategy-3.jpeg" alt="XR 콘서트 참고 이미지 3">
@@ -465,7 +529,10 @@
           <img src="project-strategy-5.jpeg" alt="XR 콘서트 참고 이미지 5">
         </div>
       </div>
-      <button class="purpose-next-btn">3. Artist</button>
+      <div class="purpose-nav-buttons">
+        <button class="purpose-nav-btn purpose-nav-prev" data-prev="purpose">1. Purpose</button>
+        <button class="purpose-nav-btn purpose-nav-next" data-next="artist">3. Artist</button>
+      </div>
     </div>
   `;
 
@@ -489,11 +556,11 @@
             </div>
             <div class="artist-profile-item">
               <div class="artist-profile-label">Concept</div>
-              <div class="artist-profile-value">Distopia / 신비주의 / 도시적인 / 몽환 <strong><1984></strong></div>
+              <div class="artist-profile-value">Distopia / 신비주의 / 도시적인 / 몽환적인 <strong><1984></strong></div>
             </div>
             <div class="artist-profile-item">
               <div class="artist-profile-label">그 외 특징</div>
-              <div class="artist-profile-value">인스타 계정 이름도 뒤에 trbl(Trouble)을 붙이며, 특유의 우울함을 추구</div>
+              <div class="artist-profile-value">#Deantrbl(Trouble) #Deanfluenza #권혁 #Producer #한국의 프랭크오션</div>
             </div>
             <a href="https://www.instagram.com/deantrbl/" target="_blank" rel="noopener noreferrer" class="artist-profile-link">Instagram 프로필 보기 →</a>
           </div>
@@ -501,7 +568,10 @@
         <div class="purpose-quote-label">콘서트 로그라인</div>
         <div class="purpose-quote">무너져가는 디스토피아에서 불안정함을 노래하다.</div>
       </div>
-      <button class="purpose-next-btn">4. Levels</button>
+      <div class="purpose-nav-buttons">
+        <button class="purpose-nav-btn purpose-nav-prev" data-prev="project-strategy">2. Project Strategy</button>
+        <button class="purpose-nav-btn purpose-nav-next" data-next="levels">4. Levels</button>
+      </div>
     </div>
   `;
 
@@ -549,6 +619,10 @@
             </div>
           </div>
         </div>
+      </div>
+      <div class="purpose-nav-buttons">
+        <button class="purpose-nav-btn purpose-nav-prev" data-prev="artist">3. Artist</button>
+        <button class="purpose-nav-btn purpose-nav-next" disabled style="opacity:0.3;">4. Levels</button>
       </div>
     </div>
   `;
@@ -764,51 +838,124 @@
   let idx = 0;
   let currentMode = 'manifesto'; // 'manifesto', 'purpose', 'project-strategy', 'artist', or 'levels'
   
+  // Helper function to reset scroll position for a content wrap
+  function resetScrollPosition(wrap, titleSelector = '.purpose-title') {
+    if(!wrap) return;
+    
+    wrap.scrollTop = 0;
+    const title = wrap.querySelector(titleSelector);
+    if(title) {
+      title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+    }
+    
+    // Force scroll reset multiple times to ensure it sticks
+    // CSS transition is 0.4s, so reset after transition completes
+    requestAnimationFrame(() => {
+      if(wrap) {
+        wrap.scrollTop = 0;
+        if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+        requestAnimationFrame(() => {
+          if(wrap) {
+            wrap.scrollTop = 0;
+            if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+            // Reset after CSS transition completes (0.4s)
+            setTimeout(() => {
+              if(wrap) {
+                wrap.scrollTop = 0;
+                if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                // Final reset after another frame
+                requestAnimationFrame(() => {
+                  if(wrap) {
+                    wrap.scrollTop = 0;
+                    if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                  }
+                });
+              }
+            }, 450);
+          }
+        });
+      }
+    });
+  }
+  
+  // Helper function to show a section and hide others
+  function showSection(activeWrap, currentMode) {
+    // Hide all sections first
+      if(manifestoWrap) manifestoWrap.style.display = 'none';
+    if(purposeWrap) purposeWrap.style.display = 'none';
+      if(projectStrategyWrap) projectStrategyWrap.style.display = 'none';
+      if(artistWrap) artistWrap.style.display = 'none';
+      if(levelsWrap) levelsWrap.style.display = 'none';
+      if(counter) counter.style.display = 'none';
+      if(thumbs) thumbs.style.display = 'none';
+      if(prevBtn) prevBtn.style.display = 'none';
+      if(nextBtn) nextBtn.style.display = 'none';
+    
+    // Reset scroll position to top for all sections before showing
+    if(purposeWrap) purposeWrap.scrollTop = 0;
+    if(projectStrategyWrap) projectStrategyWrap.scrollTop = 0;
+    if(artistWrap) artistWrap.scrollTop = 0;
+    if(levelsWrap) levelsWrap.scrollTop = 0;
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    
+    // Show active section
+    if(activeWrap) {
+      activeWrap.scrollTop = 0;
+      activeWrap.style.display = 'block';
+      resetScrollPosition(activeWrap);
+      debugLog(`XR_1_bg.html:showSection`, `${currentMode} display set to block`, {
+        scrollTop: activeWrap.scrollTop,
+        display: activeWrap.style.display
+      });
+    }
+  }
+  
+  // Helper function to safely observe elements with IntersectionObserver
+  function observeElements(observer, elements, elementType = 'element') {
+    if(!observer || !elements || elements.length === 0) return;
+    
+    elements.forEach((el, index) => {
+      if(el && el.nodeType === 1) {
+        try {
+          observer.observe(el);
+        } catch(e) {
+          debugLog(`XR_1_bg.html:observeElements`, `Error observing ${elementType}`, {
+            error: e.message,
+            element: el.tagName || 'unknown',
+            index: index
+          });
+          console.error(`Error observing ${elementType}:`, e, el);
+        }
+      }
+    });
+  }
+  
+  // Helper function to get active content wrap based on current mode
+  function getActiveContent() {
+    if(currentMode === 'purpose' && purposeWrap) return purposeWrap;
+    else if(currentMode === 'project-strategy' && projectStrategyWrap) return projectStrategyWrap;
+    else if(currentMode === 'artist' && artistWrap) return artistWrap;
+    else if(currentMode === 'levels' && levelsWrap) return levelsWrap;
+    return null;
+  }
+  
   function render(){
+    debugLog('XR_1_bg.html:render', 'render() called', {currentMode:currentMode});
+    
+    // Reset all scroll positions first, before changing display
+    if(purposeWrap) purposeWrap.scrollTop = 0;
+    if(projectStrategyWrap) projectStrategyWrap.scrollTop = 0;
+    if(artistWrap) artistWrap.scrollTop = 0;
+    if(levelsWrap) levelsWrap.scrollTop = 0;
+    
     if(currentMode === 'purpose'){
-      // Show purpose content
-      if(manifestoWrap) manifestoWrap.style.display = 'none';
-      if(purposeWrap) purposeWrap.style.display = 'block';
-      if(projectStrategyWrap) projectStrategyWrap.style.display = 'none';
-      if(artistWrap) artistWrap.style.display = 'none';
-      if(levelsWrap) levelsWrap.style.display = 'none';
-      if(counter) counter.style.display = 'none';
-      if(thumbs) thumbs.style.display = 'none';
-      if(prevBtn) prevBtn.style.display = 'none';
-      if(nextBtn) nextBtn.style.display = 'none';
+      showSection(purposeWrap, 'purpose');
     } else if(currentMode === 'project-strategy'){
-      // Show project strategy content
-      if(manifestoWrap) manifestoWrap.style.display = 'none';
-      if(purposeWrap) purposeWrap.style.display = 'none';
-      if(projectStrategyWrap) projectStrategyWrap.style.display = 'block';
-      if(artistWrap) artistWrap.style.display = 'none';
-      if(levelsWrap) levelsWrap.style.display = 'none';
-      if(counter) counter.style.display = 'none';
-      if(thumbs) thumbs.style.display = 'none';
-      if(prevBtn) prevBtn.style.display = 'none';
-      if(nextBtn) nextBtn.style.display = 'none';
+      showSection(projectStrategyWrap, 'project-strategy');
     } else if(currentMode === 'artist'){
-      // Show artist content
-      if(manifestoWrap) manifestoWrap.style.display = 'none';
-      if(purposeWrap) purposeWrap.style.display = 'none';
-      if(projectStrategyWrap) projectStrategyWrap.style.display = 'none';
-      if(artistWrap) artistWrap.style.display = 'block';
-      if(levelsWrap) levelsWrap.style.display = 'none';
-      if(counter) counter.style.display = 'none';
-      if(thumbs) thumbs.style.display = 'none';
-      if(prevBtn) prevBtn.style.display = 'none';
-      if(nextBtn) nextBtn.style.display = 'none';
+      showSection(artistWrap, 'artist');
     } else if(currentMode === 'levels'){
-      // Show levels content
-      if(manifestoWrap) manifestoWrap.style.display = 'none';
-      if(purposeWrap) purposeWrap.style.display = 'none';
-      if(projectStrategyWrap) projectStrategyWrap.style.display = 'none';
-      if(artistWrap) artistWrap.style.display = 'none';
-      if(levelsWrap) levelsWrap.style.display = 'block';
-      if(counter) counter.style.display = 'none';
-      if(thumbs) thumbs.style.display = 'none';
-      if(prevBtn) prevBtn.style.display = 'none';
-      if(nextBtn) nextBtn.style.display = 'none';
+      showSection(levelsWrap, 'levels');
     } else {
       // Show manifesto content
       if(manifestoWrap) manifestoWrap.style.display = 'flex';
@@ -832,16 +979,65 @@
   }
 
   function openPresent(){
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/adde1938-5c03-4722-845b-a8d5d8f3bd1e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'XR_1_bg.html:874',message:'openPresent() called',data:{currentMode:currentMode},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+    // #endregion
     overlay.classList.add('open');
     document.documentElement.style.scrollBehavior = 'auto';
     document.body.style.overflow = 'hidden';
     document.body.classList.add('presenting');
     render();
     
+    // Scroll to top immediately
+    const activeContent = getActiveContent();
+    
+    if(activeContent) debugLog('XR_1_bg.html:openPresent', 'Before setting scrollTop to 0', {
+      currentMode:currentMode,
+      scrollTop:activeContent.scrollTop,
+      display:activeContent.style.display
+    }, 'D');
+    
+    if(activeContent){
+      activeContent.scrollTop = 0;
+      // Force scroll reset using requestAnimationFrame to ensure it happens after render
+      requestAnimationFrame(() => {
+        if(activeContent) {
+          activeContent.scrollTop = 0;
+          requestAnimationFrame(() => {
+            if(activeContent) {
+              activeContent.scrollTop = 0;
+              // Additional reset after a short delay to ensure it sticks
+              setTimeout(() => {
+                if(activeContent) activeContent.scrollTop = 0;
+              }, 100);
+            }
+          });
+        }
+      });
+    }
+    if(activeContent) debugLog('XR_1_bg.html:openPresent', 'After setting scrollTop to 0', {
+      currentMode:currentMode,
+      scrollTop:activeContent.scrollTop
+    }, 'D');
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    
     // Setup scroll-based animations for Purpose content
     if(currentMode === 'purpose' && purposeWrap){
       setTimeout(() => {
+        // #region agent log
+        if(purposeWrap) fetch('http://127.0.0.1:7242/ingest/adde1938-5c03-4722-845b-a8d5d8f3bd1e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'XR_1_bg.html:895',message:'Before setupPurposeScrollAnimations',data:{scrollTop:purposeWrap.scrollTop},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
+        // #endregion
         setupPurposeScrollAnimations();
+        // Ensure scroll is at top after animation setup
+        if(purposeWrap) {
+          purposeWrap.scrollTop = 0;
+          requestAnimationFrame(() => {
+            if(purposeWrap) purposeWrap.scrollTop = 0;
+          });
+        }
+        if(purposeWrap) debugLog('XR_1_bg.html:openPresent', 'After setupPurposeScrollAnimations and scrollTop reset', {
+          scrollTop:purposeWrap.scrollTop
+        }, 'E');
       }, 400);
     }
     
@@ -849,6 +1045,13 @@
     if(currentMode === 'project-strategy' && projectStrategyWrap){
       setTimeout(() => {
         setupPurposeScrollAnimations(projectStrategyWrap);
+        // Ensure scroll is at top after animation setup
+        if(projectStrategyWrap) {
+          projectStrategyWrap.scrollTop = 0;
+          requestAnimationFrame(() => {
+            if(projectStrategyWrap) projectStrategyWrap.scrollTop = 0;
+          });
+        }
       }, 400);
     }
     
@@ -856,6 +1059,13 @@
     if(currentMode === 'artist' && artistWrap){
       setTimeout(() => {
         setupPurposeScrollAnimations(artistWrap);
+        // Ensure scroll is at top after animation setup
+        if(artistWrap) {
+          artistWrap.scrollTop = 0;
+          requestAnimationFrame(() => {
+            if(artistWrap) artistWrap.scrollTop = 0;
+          });
+        }
       }, 400);
     }
     
@@ -863,21 +1073,199 @@
     if(currentMode === 'levels' && levelsWrap){
       setTimeout(() => {
         setupLevelsScrollAnimations();
+        // Ensure scroll is at top after animation setup
+        if(levelsWrap) {
+          levelsWrap.scrollTop = 0;
+          requestAnimationFrame(() => {
+            if(levelsWrap) levelsWrap.scrollTop = 0;
+          });
+        }
       }, 400);
     }
   }
   
   function setupPurposeScrollAnimations(targetWrap = purposeWrap){
-    const contentWrap = targetWrap || purposeWrap;
-    const purposeContent = contentWrap.querySelector('.purpose-content');
-    if(!purposeContent) return;
+    debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'setupPurposeScrollAnimations called', {
+      targetWrap:targetWrap?targetWrap.className:'null',
+      hasTargetWrap:!!targetWrap,
+      hasPurposeWrap:!!purposeWrap
+    });
+    try {
+    debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Before contentWrap assignment', {
+      targetWrap:targetWrap?targetWrap.className:'null',
+      hasTargetWrap:!!targetWrap,
+      targetWrapType:targetWrap?typeof targetWrap:'null',
+      targetWrapNodeType:targetWrap?targetWrap.nodeType:'null',
+      purposeWrap:purposeWrap?purposeWrap.className:'null',
+      hasPurposeWrap:!!purposeWrap,
+      purposeWrapType:purposeWrap?typeof purposeWrap:'null',
+      purposeWrapNodeType:purposeWrap?purposeWrap.nodeType:'null'
+    });
+    
+    // Validate targetWrap and purposeWrap before assignment
+    let contentWrap = null;
+    if(targetWrap && targetWrap.nodeType === 1) {
+      contentWrap = targetWrap;
+      debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Using targetWrap for contentWrap', {
+        targetWrap:targetWrap.className
+      });
+    } else if(purposeWrap && purposeWrap.nodeType === 1) {
+      contentWrap = purposeWrap;
+      debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Using purposeWrap for contentWrap', {
+        purposeWrap:purposeWrap.className
+      });
+    } else {
+      debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Neither targetWrap nor purposeWrap is valid', {
+        targetWrap:targetWrap?targetWrap.className:'null',
+        targetWrapValid:targetWrap&&targetWrap.nodeType===1,
+        purposeWrap:purposeWrap?purposeWrap.className:'null',
+        purposeWrapValid:purposeWrap&&purposeWrap.nodeType===1
+      });
+    }
+    
+    debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'After contentWrap assignment', {
+      contentWrap:contentWrap?contentWrap.className:'null',
+      hasContentWrap:!!contentWrap,
+      contentWrapType:contentWrap?typeof contentWrap:'null',
+      contentWrapNodeType:contentWrap?contentWrap.nodeType:'null',
+      usedTargetWrap:contentWrap===targetWrap,
+      usedPurposeWrap:contentWrap===purposeWrap
+    });
+    
+    if(!contentWrap) {
+      debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'contentWrap is null or undefined', {
+        targetWrap:targetWrap?targetWrap.className:'null',
+        purposeWrap:purposeWrap?purposeWrap.className:'null'
+      });
+      console.error('setupPurposeScrollAnimations: contentWrap is null or undefined');
+      console.error('targetWrap:', targetWrap);
+      console.error('purposeWrap:', purposeWrap);
+      return;
+    }
+    
+    debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Before querySelector for purpose-content', {
+      contentWrap:contentWrap?contentWrap.className:'null',
+      contentWrapExists:!!contentWrap,
+      contentWrapTagName:contentWrap?contentWrap.tagName:'null',
+      contentWrapInnerHTML:contentWrap?contentWrap.innerHTML.substring(0,200):'null'
+    });
+    
+    let purposeContent = null;
+    try {
+      purposeContent = contentWrap.querySelector('.purpose-content');
+    } catch(e) {
+      debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Error in querySelector for purpose-content', {
+        error:e.message,
+        stack:e.stack,
+        contentWrap:contentWrap?contentWrap.className:'null'
+      });
+      console.error('Error in querySelector for .purpose-content:', e, contentWrap);
+      return;
+    }
+    
+    if(!purposeContent) debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'purposeContent not found', {
+      contentWrap:contentWrap?contentWrap.className:'null',
+      contentWrapExists:!!contentWrap,
+      queryResult:null,
+      allChildren:contentWrap?Array.from(contentWrap.children).map(c=>c.className).join(','):'null'
+    });
+    
+    if(!purposeContent) {
+      console.error('setupPurposeScrollAnimations: .purpose-content element not found in contentWrap');
+      console.error('contentWrap:', contentWrap);
+      console.error('contentWrap children:', contentWrap ? Array.from(contentWrap.children) : 'null');
+      return;
+    }
+    
+    // Reset all animations - remove visible classes and scrolled class
+    contentWrap.classList.remove('scrolled');
+    const allAnimatedElements = contentWrap.querySelectorAll('.visible, [class*="visible"]');
+    allAnimatedElements.forEach(el => {
+      el.classList.remove('visible');
+    });
+    
+    // Reset title, paragraphs, sections, images, etc.
+    const title = contentWrap.querySelector('.purpose-title');
+    let paragraphs = purposeContent.querySelectorAll('p');
+    let sections = purposeContent.querySelectorAll('.purpose-section');
+    let imageGrids = purposeContent.querySelectorAll('.purpose-image-grid');
+    let images = purposeContent.querySelectorAll('img');
+    let navButtons = contentWrap.querySelector('.purpose-nav-buttons');
+    
+    debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Before removing visible classes', {
+      title:!!title,
+      paragraphsCount:paragraphs?paragraphs.length:0,
+      sectionsCount:sections?sections.length:0,
+      imageGridsCount:imageGrids?imageGrids.length:0,
+      imagesCount:images?images.length:0,
+      navButtons:!!navButtons
+    });
+    
+    // Safely remove visible classes from all elements
+    const elementsToReset = [];
+    if(title) elementsToReset.push(title);
+    if(paragraphs && paragraphs.length > 0) elementsToReset.push(...Array.from(paragraphs));
+    if(sections && sections.length > 0) elementsToReset.push(...Array.from(sections));
+    if(imageGrids && imageGrids.length > 0) elementsToReset.push(...Array.from(imageGrids));
+    if(images && images.length > 0) elementsToReset.push(...Array.from(images));
+    if(navButtons) elementsToReset.push(navButtons);
+    
+    elementsToReset.forEach(el => {
+      if(el && el.nodeType === 1) { // Check if el is a valid element node
+        try {
+          el.classList.remove('visible');
+        } catch(e) {
+          debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Error removing visible class', {
+            error:e.message,
+            element:el?el.tagName:'null'
+          });
+          console.error('Error removing visible class:', e, el);
+        }
+      }
+    });
     
     // Animate title first
-    const title = contentWrap.querySelector('.purpose-title');
-    if(title){
+    debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Before animating title', {
+      title:!!title,
+      titleElement:title?title.tagName:'null',
+      contentWrap:!!contentWrap,
+      contentWrapElement:contentWrap?contentWrap.className:'null'
+    });
+    
+    if(title && contentWrap){
       setTimeout(() => {
+        if(contentWrap) {
+          try {
         contentWrap.classList.add('scrolled');
+            debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Added scrolled class', {
+              contentWrap:contentWrap.className,
+              hasScrolledClass:contentWrap.classList.contains('scrolled')
+            });
+          } catch(e) {
+            debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Error adding scrolled class', {
+              error:e.message,
+              stack:e.stack,
+              contentWrap:contentWrap?contentWrap.className:'null'
+            });
+            console.error('Error adding scrolled class:', e, contentWrap);
+          }
+        }
       }, 200);
+    } else {
+      debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Title or contentWrap is null, skipping animation', {
+        title:!!title,
+        contentWrap:!!contentWrap
+      });
+    }
+    
+    // Disconnect previous observer if exists
+    if(contentWrap._scrollObserver){
+      try {
+        contentWrap._scrollObserver.disconnect();
+      } catch(e) {
+        // Observer may already be disconnected, ignore error
+      }
+      contentWrap._scrollObserver = null;
     }
     
     // Setup IntersectionObserver for scroll-triggered animations
@@ -896,27 +1284,36 @@
       });
     }, observerOptions);
     
-    // Observe paragraphs
-    const paragraphs = purposeContent.querySelectorAll('p');
-    paragraphs.forEach(p => {
-      observer.observe(p);
+    // Store observer reference for cleanup
+    contentWrap._scrollObserver = observer;
+    
+    debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Before observing elements', {
+      paragraphsCount:paragraphs?paragraphs.length:0,
+      observerExists:!!observer
     });
     
-    // Observe image grids
-    const imageGrids = purposeContent.querySelectorAll('.purpose-image-grid');
-    imageGrids.forEach(grid => observer.observe(grid));
-    
-    // Observe individual images
-    const images = purposeContent.querySelectorAll('img');
-    images.forEach(img => observer.observe(img));
+    // Observe paragraphs, image grids, and images using helper function
+    observeElements(observer, paragraphs, 'paragraph');
+    observeElements(observer, imageGrids, 'image grid');
+    observeElements(observer, images, 'image');
     
     // Observe quote label
     const quoteLabels = purposeContent.querySelectorAll('.purpose-quote-label');
-    quoteLabels.forEach(label => observer.observe(label));
+    observeElements(observer, quoteLabels, 'quote label');
     
     // Observe quote (special attention)
     const quote = purposeContent.querySelector('.purpose-quote');
     if(quote){
+      // Disconnect previous quoteObserver if exists
+      if(quote._quoteObserver){
+        try {
+          quote._quoteObserver.disconnect();
+        } catch(e) {
+          // Observer may already be disconnected, ignore error
+        }
+        quote._quoteObserver = null;
+      }
+      
       const quoteObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if(entry.isIntersecting){
@@ -931,22 +1328,33 @@
           }
         });
       }, { threshold: 0.3 });
+      
+      // Store observer reference for cleanup
+      quote._quoteObserver = quoteObserver;
       quoteObserver.observe(quote);
     }
     
-    // Observe artist profile
+    // Observe artist profile and sections using helper function
     const artistProfiles = purposeContent.querySelectorAll('.artist-profile');
-    artistProfiles.forEach(profile => observer.observe(profile));
+    observeElements(observer, artistProfiles, 'artist profile');
+    observeElements(observer, sections, 'section');
     
-    // Observe sections
-    const sections = purposeContent.querySelectorAll('.purpose-section');
-    sections.forEach(section => {
-      observer.observe(section);
-    });
-    
-    // Observe next button
-    const nextBtn = contentWrap.querySelector('.purpose-next-btn');
-    if(nextBtn){
+    // Observe navigation buttons
+    if(navButtons){
+      debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Setting up nav buttons', {
+        hasNavButtons:!!navButtons
+      });
+      
+      // Disconnect previous btnObserver if exists
+      if(navButtons._btnObserver){
+        try {
+          navButtons._btnObserver.disconnect();
+        } catch(e) {
+          // Observer may already be disconnected, ignore error
+        }
+        navButtons._btnObserver = null;
+      }
+      
       const btnObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if(entry.isIntersecting){
@@ -956,11 +1364,35 @@
           }
         });
       }, { threshold: 0.5 });
-      btnObserver.observe(nextBtn);
+      
+      // Store observer reference for cleanup
+      navButtons._btnObserver = btnObserver;
+      btnObserver.observe(navButtons);
+      
+      // Add interactive effects to all nav buttons
+      const navBtns = navButtons.querySelectorAll('.purpose-nav-btn:not(:disabled)');
+      navBtns.forEach(btn => {
+        // Remove existing mousemove listeners if any
+        if(btn._mousemoveHandler) {
+          try {
+            btn.removeEventListener('mousemove', btn._mousemoveHandler);
+          } catch(e) {
+            // Ignore errors if handler was already removed
+          }
+          btn._mousemoveHandler = null;
+        }
+        if(btn._mouseleaveHandler) {
+          try {
+            btn.removeEventListener('mouseleave', btn._mouseleaveHandler);
+          } catch(e) {
+            // Ignore errors if handler was already removed
+          }
+          btn._mouseleaveHandler = null;
+        }
       
       // Add same interactive effects as TOC items
-      nextBtn.addEventListener('mousemove', (e) => {
-        const rect = nextBtn.getBoundingClientRect();
+        const mousemoveHandler = (e) => {
+          const rect = btn.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         const centerX = rect.width / 2;
@@ -974,8 +1406,8 @@
         const offsetX = (x - centerX) * 0.3;
         const offsetY = (y - centerY) * 0.3;
         
-        nextBtn.style.setProperty('--spotlight-x', `${50 + (offsetX / rect.width) * 100}%`);
-        nextBtn.style.setProperty('--spotlight-y', `${50 + (offsetY / rect.height) * 100}%`);
+          btn.style.setProperty('--spotlight-x', `${50 + (offsetX / rect.width) * 100}%`);
+          btn.style.setProperty('--spotlight-y', `${50 + (offsetY / rect.height) * 100}%`);
         
         // 3D rotation based on mouse position (X, Y, Z-axis rotation)
         const rotateY = mouseX * 25; // -25 to 25 degrees (left-right tilt)
@@ -983,45 +1415,107 @@
         const rotateZ = mouseX * 8 + mouseY * 5; // Z-axis rotation (combination of X and Y)
         const scale = 1.08 + Math.abs(mouseX) * 0.03 + Math.abs(mouseY) * 0.03;
         
-        nextBtn.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${scale}) translateZ(30px)`;
-      });
+          btn.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${scale}) translateZ(30px)`;
+        };
       
-      nextBtn.addEventListener('mouseleave', () => {
+        const mouseleaveHandler = () => {
         // Reset spotlight to center when mouse leaves
-        nextBtn.style.setProperty('--spotlight-x', '50%');
-        nextBtn.style.setProperty('--spotlight-y', '50%');
+          btn.style.setProperty('--spotlight-x', '50%');
+          btn.style.setProperty('--spotlight-y', '50%');
         // Reset 3D transform
-        nextBtn.style.transform = '';
+          btn.style.transform = '';
+        };
+        
+        btn._mousemoveHandler = mousemoveHandler;
+        btn._mouseleaveHandler = mouseleaveHandler;
+        btn.addEventListener('mousemove', mousemoveHandler);
+        btn.addEventListener('mouseleave', mouseleaveHandler);
       });
       
-      // Click handler - determine next content based on current mode
-      nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const btnText = nextBtn.textContent.trim();
-        
-        if(btnText.includes('Project Strategy')){
-          // Go to Project Strategy
-          closePresent();
-          setTimeout(() => {
-            currentMode = 'project-strategy';
-            openPresent();
-          }, 300);
-        } else if(btnText.includes('Artist')){
-          // Go to Artist
-          closePresent();
-          setTimeout(() => {
-            currentMode = 'artist';
-            openPresent();
-          }, 300);
-        } else if(btnText.includes('Levels')){
-          // Go to Levels
-          closePresent();
-          setTimeout(() => {
-            currentMode = 'levels';
-            openPresent();
-          }, 300);
+      // Click handlers for prev/next buttons
+      const prevBtn = navButtons.querySelector('.purpose-nav-prev:not(:disabled)');
+      const nextBtn = navButtons.querySelector('.purpose-nav-next:not(:disabled)');
+      
+      // Remove existing click listeners if any
+      if(prevBtn && prevBtn._clickHandler){
+        try {
+          prevBtn.removeEventListener('click', prevBtn._clickHandler);
+        } catch(e) {
+          // Ignore errors if handler was already removed
         }
-      });
+        prevBtn._clickHandler = null;
+      }
+      if(nextBtn && nextBtn._clickHandler){
+        try {
+          nextBtn.removeEventListener('click', nextBtn._clickHandler);
+        } catch(e) {
+          // Ignore errors if handler was already removed
+        }
+        nextBtn._clickHandler = null;
+      }
+      
+      if(prevBtn && prevBtn.dataset.prev){
+        const clickHandler = (e) => {
+        e.stopPropagation();
+          const targetMode = prevBtn.dataset.prev;
+          debugLog('XR_1_bg.html:prevBtn', 'prevBtn clicked', {
+            currentMode:currentMode,
+            targetMode:targetMode
+          });
+          closePresent();
+          setTimeout(() => {
+            currentMode = targetMode;
+            const activeContentBefore = getActiveContent();
+            debugLog('XR_1_bg.html:prevBtn', 'Before openPresent() in prevBtn handler', {
+              currentMode:currentMode,
+              activeContentScrollTop:activeContentBefore?activeContentBefore.scrollTop:0
+            }, 'B');
+            openPresent();
+            // Scroll to top after opening
+          setTimeout(() => {
+              const activeContent = getActiveContent();
+              debugLog('XR_1_bg.html:prevBtn', 'In prevBtn setTimeout callback', {
+                currentMode:currentMode,
+                scrollTop:activeContent?activeContent.scrollTop:0
+              }, 'E');
+              
+              if(activeContent){
+                activeContent.scrollTop = 0;
+              }
+              debugLog('XR_1_bg.html:prevBtn', 'After setting scrollTop in prevBtn callback', {
+                scrollTop:activeContent?activeContent.scrollTop:0
+              }, 'E');
+              window.scrollTo({ top: 0, behavior: 'auto' });
+            }, 100);
+          }, 300);
+        };
+        
+        prevBtn._clickHandler = clickHandler;
+        prevBtn.addEventListener('click', clickHandler);
+      }
+      
+      if(nextBtn && nextBtn.dataset.next){
+        const clickHandler = (e) => {
+          e.stopPropagation();
+          const targetMode = nextBtn.dataset.next;
+          closePresent();
+          setTimeout(() => {
+            currentMode = targetMode;
+            openPresent();
+            // Scroll to top after opening
+            setTimeout(() => {
+              const activeContent = getActiveContent();
+              if(activeContent){
+                activeContent.scrollTop = 0;
+              }
+              window.scrollTo({ top: 0, behavior: 'auto' });
+            }, 100);
+          }, 300);
+        };
+        
+        nextBtn._clickHandler = clickHandler;
+        nextBtn.addEventListener('click', clickHandler);
+        }
     }
     
     // Add ripple animation for quote
@@ -1036,20 +1530,56 @@
       `;
       document.head.appendChild(style);
     }
+    } catch(error) {
+      debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Error in setupPurposeScrollAnimations', {
+        error:error.message,
+        stack:error.stack,
+        name:error.name,
+        targetWrap:targetWrap?targetWrap.className:'null'
+      });
+      console.error('Error in setupPurposeScrollAnimations:', error);
+      // Re-throw to see in console
+      throw error;
+    }
   }
   
   function setupLevelsScrollAnimations(){
     if(!levelsWrap) return;
     
+    try {
     const levelsGrid = levelsWrap.querySelector('.levels-grid');
     if(!levelsGrid) return;
     
-    // Animate title first
+    // Reset all animations - remove visible classes and scrolled class
+    levelsWrap.classList.remove('scrolled');
+    const allAnimatedElements = levelsWrap.querySelectorAll('.visible, [class*="visible"]');
+    allAnimatedElements.forEach(el => {
+      el.classList.remove('visible');
+    });
+    
+    // Reset title and cards
     const title = levelsWrap.querySelector('.purpose-title');
+    let cards = levelsGrid.querySelectorAll('.level-content-card');
+    
+    if(title) title.classList.remove('visible');
+    cards.forEach(card => card.classList.remove('visible'));
+    if(levelsGrid) levelsGrid.classList.remove('visible');
+    
+    // Animate title first
     if(title){
       setTimeout(() => {
         levelsWrap.classList.add('scrolled');
       }, 200);
+    }
+    
+    // Disconnect previous observer if exists
+    if(levelsWrap._levelsObserver){
+      try {
+        levelsWrap._levelsObserver.disconnect();
+      } catch(e) {
+        // Observer may already be disconnected, ignore error
+      }
+      levelsWrap._levelsObserver = null;
     }
     
     // Setup IntersectionObserver for cards
@@ -1068,16 +1598,46 @@
       });
     }, observerOptions);
     
+    // Store observer reference for cleanup
+    levelsWrap._levelsObserver = observer;
+    
     // Observe grid
     observer.observe(levelsGrid);
     
     // Observe individual cards
-    const cards = levelsGrid.querySelectorAll('.level-content-card');
     cards.forEach(card => {
       observer.observe(card);
       
+      // Remove existing listeners if any
+      if(card._mousemoveHandler) {
+        try {
+          card.removeEventListener('mousemove', card._mousemoveHandler);
+        } catch(e) {
+          // Ignore errors if handler was already removed
+        }
+        card._mousemoveHandler = null;
+      }
+      if(card._mouseleaveHandler) {
+        try {
+          card.removeEventListener('mouseleave', card._mouseleaveHandler);
+        } catch(e) {
+          // Ignore errors if handler was already removed
+        }
+        card._mouseleaveHandler = null;
+      }
+      
+      // Remove existing click handler if any
+      if(card._clickHandler) {
+        try {
+          card.removeEventListener('click', card._clickHandler);
+        } catch(e) {
+          // Ignore errors if handler was already removed
+        }
+        card._clickHandler = null;
+      }
+      
       // Add TOC-like hover effects (spotlight and 3D rotation)
-      card.addEventListener('mousemove', (e) => {
+      const mousemoveHandler = (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
@@ -1102,27 +1662,185 @@
         const scale = 1.02 + Math.abs(mouseX) * 0.02 + Math.abs(mouseY) * 0.02;
         
         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${scale}) translateZ(20px)`;
-      });
+      };
       
-      card.addEventListener('mouseleave', () => {
+      const mouseleaveHandler = () => {
         // Reset spotlight to center when mouse leaves
         card.style.setProperty('--spotlight-x', '50%');
         card.style.setProperty('--spotlight-y', '50%');
         // Reset 3D transform
         card.style.transform = '';
-      });
+      };
       
       // Click handler - open media modal
-      card.addEventListener('click', () => {
+      const clickHandler = () => {
         openLevelMediaModal(card);
-      });
+      };
+      
+      card._mousemoveHandler = mousemoveHandler;
+      card._mouseleaveHandler = mouseleaveHandler;
+      card._clickHandler = clickHandler;
+      card.addEventListener('mousemove', mousemoveHandler);
+      card.addEventListener('mouseleave', mouseleaveHandler);
+      card.addEventListener('click', clickHandler);
     });
     
     // Observe paragraphs
     const paragraphs = levelsWrap.querySelectorAll('.purpose-content p');
-    paragraphs.forEach(p => {
-      observer.observe(p);
-    });
+    observeElements(observer, paragraphs, 'paragraph');
+    
+    // Observe navigation buttons
+    const navButtons = levelsWrap.querySelector('.purpose-nav-buttons');
+    if(navButtons){
+      // Disconnect previous btnObserver if exists
+      if(navButtons._btnObserver){
+        try {
+          navButtons._btnObserver.disconnect();
+        } catch(e) {
+          // Observer may already be disconnected, ignore error
+        }
+        navButtons._btnObserver = null;
+      }
+      
+      const btnObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            setTimeout(() => {
+              entry.target.classList.add('visible');
+            }, 200);
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      // Store observer reference for cleanup
+      navButtons._btnObserver = btnObserver;
+      btnObserver.observe(navButtons);
+      
+      // Add interactive effects to all nav buttons
+      const navBtns = navButtons.querySelectorAll('.purpose-nav-btn:not(:disabled)');
+      navBtns.forEach(btn => {
+        // Remove existing listeners if any
+        if(btn._mousemoveHandler) btn.removeEventListener('mousemove', btn._mousemoveHandler);
+        if(btn._mouseleaveHandler) btn.removeEventListener('mouseleave', btn._mouseleaveHandler);
+        
+        // Add same interactive effects as TOC items
+        const mousemoveHandler = (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          
+          // Calculate mouse position relative to center (-1 to 1)
+          const mouseX = (x - centerX) / centerX;
+          const mouseY = (y - centerY) / centerY;
+          
+          // Update spotlight position based on mouse position
+          const offsetX = (x - centerX) * 0.3;
+          const offsetY = (y - centerY) * 0.3;
+          
+          btn.style.setProperty('--spotlight-x', `${50 + (offsetX / rect.width) * 100}%`);
+          btn.style.setProperty('--spotlight-y', `${50 + (offsetY / rect.height) * 100}%`);
+          
+          // 3D rotation based on mouse position (X, Y, Z-axis rotation)
+          const rotateY = mouseX * 25; // -25 to 25 degrees (left-right tilt)
+          const rotateX = -mouseY * 20; // -20 to 20 degrees (up-down tilt)
+          const rotateZ = mouseX * 8 + mouseY * 5; // Z-axis rotation (combination of X and Y)
+          const scale = 1.08 + Math.abs(mouseX) * 0.03 + Math.abs(mouseY) * 0.03;
+          
+          btn.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${scale}) translateZ(30px)`;
+        };
+        
+        const mouseleaveHandler = () => {
+          // Reset spotlight to center when mouse leaves
+          btn.style.setProperty('--spotlight-x', '50%');
+          btn.style.setProperty('--spotlight-y', '50%');
+          // Reset 3D transform
+          btn.style.transform = '';
+        };
+        
+        btn._mousemoveHandler = mousemoveHandler;
+        btn._mouseleaveHandler = mouseleaveHandler;
+        btn.addEventListener('mousemove', mousemoveHandler);
+        btn.addEventListener('mouseleave', mouseleaveHandler);
+      });
+      
+      // Click handlers for prev/next buttons
+      const prevBtn = navButtons.querySelector('.purpose-nav-prev:not(:disabled)');
+      const nextBtn = navButtons.querySelector('.purpose-nav-next:not(:disabled)');
+      
+      // Remove existing click listeners if any
+      if(prevBtn && prevBtn._clickHandler){
+        try {
+          prevBtn.removeEventListener('click', prevBtn._clickHandler);
+        } catch(e) {
+          // Ignore errors if handler was already removed
+        }
+        prevBtn._clickHandler = null;
+      }
+      if(nextBtn && nextBtn._clickHandler){
+        try {
+          nextBtn.removeEventListener('click', nextBtn._clickHandler);
+        } catch(e) {
+          // Ignore errors if handler was already removed
+        }
+        nextBtn._clickHandler = null;
+      }
+      
+      if(prevBtn && prevBtn.dataset.prev){
+        const clickHandler = (e) => {
+          e.stopPropagation();
+          const targetMode = prevBtn.dataset.prev;
+          closePresent();
+          setTimeout(() => {
+            currentMode = targetMode;
+            openPresent();
+            // Scroll to top after opening
+            setTimeout(() => {
+              const activeContent = getActiveContent();
+              if(activeContent){
+                activeContent.scrollTop = 0;
+              }
+              window.scrollTo({ top: 0, behavior: 'auto' });
+            }, 100);
+          }, 300);
+        };
+        
+        prevBtn._clickHandler = clickHandler;
+        prevBtn.addEventListener('click', clickHandler);
+      }
+      
+      if(nextBtn && nextBtn.dataset.next){
+        const clickHandler = (e) => {
+          e.stopPropagation();
+          const targetMode = nextBtn.dataset.next;
+          closePresent();
+          setTimeout(() => {
+            currentMode = targetMode;
+            openPresent();
+            // Scroll to top after opening
+            setTimeout(() => {
+              const activeContent = getActiveContent();
+              if(activeContent){
+                activeContent.scrollTop = 0;
+              }
+              window.scrollTo({ top: 0, behavior: 'auto' });
+            }, 100);
+          }, 300);
+        };
+        
+        nextBtn._clickHandler = clickHandler;
+        nextBtn.addEventListener('click', clickHandler);
+      }
+    }
+    } catch(error) {
+      debugLog('XR_1_bg.html:setupLevelsScrollAnimations', 'Error in setupLevelsScrollAnimations', {
+        error:error.message,
+        stack:error.stack
+      });
+      console.error('Error in setupLevelsScrollAnimations:', error);
+      throw error;
+    }
   }
   
   // Level media modal functions
@@ -1387,6 +2105,26 @@
       card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateZ(6px)`;
     });
     card.addEventListener('mouseleave', ()=>{ card.style.transform = ''; });
+  });
+
+  // Ensure scroll starts at top on page load
+  window.addEventListener('load', () => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+    
+    // Reset all content wraps scroll position
+    if(typeof purposeWrap !== 'undefined' && purposeWrap) purposeWrap.scrollTop = 0;
+    if(typeof projectStrategyWrap !== 'undefined' && projectStrategyWrap) projectStrategyWrap.scrollTop = 0;
+    if(typeof artistWrap !== 'undefined' && artistWrap) artistWrap.scrollTop = 0;
+    if(typeof levelsWrap !== 'undefined' && levelsWrap) levelsWrap.scrollTop = 0;
+  });
+
+  // Also reset on DOMContentLoaded
+  document.addEventListener('DOMContentLoaded', () => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
   });
 
 })();
