@@ -1252,10 +1252,11 @@ window.addEventListener('unhandledrejection', (e) => {
     
     // Reset title, paragraphs, sections, images, etc.
     const title = contentWrap.querySelector('.purpose-title');
-    let paragraphs = purposeContent.querySelectorAll('p');
-    let sections = purposeContent.querySelectorAll('.purpose-section');
-    let imageGrids = purposeContent.querySelectorAll('.purpose-image-grid');
-    let images = purposeContent.querySelectorAll('img');
+    // Query from contentWrap (actual DOM) instead of purposeContent (string)
+    let paragraphs = contentWrap.querySelectorAll('.purpose-content p');
+    let sections = contentWrap.querySelectorAll('.purpose-section');
+    let imageGrids = contentWrap.querySelectorAll('.purpose-image-grid');
+    let images = contentWrap.querySelectorAll('img');
     let navButtons = contentWrap.querySelector('.purpose-nav-buttons');
     
     debugLog('XR_1_bg.html:setupPurposeScrollAnimations', 'Before removing visible classes', {
@@ -1363,12 +1364,61 @@ window.addEventListener('unhandledrejection', (e) => {
     observeElements(observer, imageGrids, 'image grid');
     observeElements(observer, images, 'image');
     
+    // Ensure images are visible when loaded, even if observer hasn't triggered yet
+    images.forEach((img, index) => {
+      if(img.complete && img.naturalHeight !== 0) {
+        // Image already loaded, make it visible
+        setTimeout(() => {
+          img.classList.add('visible');
+          // Also ensure parent image grid is visible
+          const parentGrid = img.closest('.purpose-image-grid');
+          if(parentGrid) {
+            parentGrid.classList.add('visible');
+          }
+        }, index * 50);
+      } else {
+        // Wait for image to load
+        img.addEventListener('load', () => {
+          img.classList.add('visible');
+          const parentGrid = img.closest('.purpose-image-grid');
+          if(parentGrid) {
+            parentGrid.classList.add('visible');
+          }
+        });
+        img.addEventListener('error', () => {
+          console.warn('Image failed to load:', img.src);
+        });
+      }
+    });
+    
+    // Also ensure image grids are visible when they contain loaded images
+    imageGrids.forEach((grid, index) => {
+      const gridImages = grid.querySelectorAll('img');
+      let loadedCount = 0;
+      gridImages.forEach(img => {
+        if(img.complete && img.naturalHeight !== 0) {
+          loadedCount++;
+        }
+        img.addEventListener('load', () => {
+          loadedCount++;
+          if(loadedCount === gridImages.length) {
+            grid.classList.add('visible');
+          }
+        });
+      });
+      if(loadedCount === gridImages.length && gridImages.length > 0) {
+        setTimeout(() => {
+          grid.classList.add('visible');
+        }, index * 100);
+      }
+    });
+    
     // Observe quote label
-    const quoteLabels = purposeContent.querySelectorAll('.purpose-quote-label');
+    const quoteLabels = contentWrap.querySelectorAll('.purpose-quote-label');
     observeElements(observer, quoteLabels, 'quote label');
     
     // Observe quote (special attention)
-    const quote = purposeContent.querySelector('.purpose-quote');
+    const quote = contentWrap.querySelector('.purpose-quote');
     if(quote){
       // Disconnect previous quoteObserver if exists
       if(quote._quoteObserver){
@@ -1401,7 +1451,7 @@ window.addEventListener('unhandledrejection', (e) => {
     }
     
     // Observe artist profile and sections using helper function
-    const artistProfiles = purposeContent.querySelectorAll('.artist-profile');
+    const artistProfiles = contentWrap.querySelectorAll('.artist-profile');
     observeElements(observer, artistProfiles, 'artist profile');
     observeElements(observer, sections, 'section');
     
