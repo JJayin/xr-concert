@@ -902,10 +902,44 @@ window.addEventListener('unhandledrejection', (e) => {
     if(activeWrap) {
       activeWrap.scrollTop = 0;
       activeWrap.style.display = 'block';
-      resetScrollPosition(activeWrap);
+      
+      // Ensure title is visible by scrolling to top and showing title
+      const title = activeWrap.querySelector('.purpose-title');
+      if(title) {
+        // Reset scroll first
+        activeWrap.scrollTop = 0;
+        // Scroll title into view to ensure it's fully visible
+        title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+        
+        // Force multiple resets to ensure title is visible
+        requestAnimationFrame(() => {
+          if(activeWrap) {
+            activeWrap.scrollTop = 0;
+            if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+            requestAnimationFrame(() => {
+              if(activeWrap) {
+                activeWrap.scrollTop = 0;
+                if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                // Reset after CSS transition completes
+                setTimeout(() => {
+                  if(activeWrap) {
+                    activeWrap.scrollTop = 0;
+                    if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                  }
+                }, 450);
+              }
+            });
+          }
+        });
+      } else {
+        // Fallback to resetScrollPosition if title not found
+        resetScrollPosition(activeWrap);
+      }
+      
       debugLog(`XR_1_bg.html:showSection`, `${currentMode} display set to block`, {
         scrollTop: activeWrap.scrollTop,
-        display: activeWrap.style.display
+        display: activeWrap.style.display,
+        hasTitle: !!title
       });
     }
   }
@@ -999,16 +1033,28 @@ window.addEventListener('unhandledrejection', (e) => {
     
     if(activeContent){
       activeContent.scrollTop = 0;
+      
+      // Ensure title is visible
+      const title = activeContent.querySelector('.purpose-title');
+      if(title) {
+        title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+      }
+      
       // Force scroll reset using requestAnimationFrame to ensure it happens after render
       requestAnimationFrame(() => {
         if(activeContent) {
           activeContent.scrollTop = 0;
+          if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
           requestAnimationFrame(() => {
             if(activeContent) {
               activeContent.scrollTop = 0;
+              if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
               // Additional reset after a short delay to ensure it sticks
               setTimeout(() => {
-                if(activeContent) activeContent.scrollTop = 0;
+                if(activeContent) {
+                  activeContent.scrollTop = 0;
+                  if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                }
               }, 100);
             }
           });
@@ -1028,11 +1074,16 @@ window.addEventListener('unhandledrejection', (e) => {
         if(purposeWrap) fetch('http://127.0.0.1:7242/ingest/adde1938-5c03-4722-845b-a8d5d8f3bd1e',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'XR_1_bg.html:895',message:'Before setupPurposeScrollAnimations',data:{scrollTop:purposeWrap.scrollTop},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'E'})}).catch(()=>{});
         // #endregion
         setupPurposeScrollAnimations();
-        // Ensure scroll is at top after animation setup
+        // Ensure scroll is at top and title is visible after animation setup
         if(purposeWrap) {
           purposeWrap.scrollTop = 0;
+          const title = purposeWrap.querySelector('.purpose-title');
+          if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
           requestAnimationFrame(() => {
-            if(purposeWrap) purposeWrap.scrollTop = 0;
+            if(purposeWrap) {
+              purposeWrap.scrollTop = 0;
+              if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+            }
           });
         }
         if(purposeWrap) debugLog('XR_1_bg.html:openPresent', 'After setupPurposeScrollAnimations and scrollTop reset', {
@@ -1045,11 +1096,16 @@ window.addEventListener('unhandledrejection', (e) => {
     if(currentMode === 'project-strategy' && projectStrategyWrap){
       setTimeout(() => {
         setupPurposeScrollAnimations(projectStrategyWrap);
-        // Ensure scroll is at top after animation setup
+        // Ensure scroll is at top and title is visible after animation setup
         if(projectStrategyWrap) {
           projectStrategyWrap.scrollTop = 0;
+          const title = projectStrategyWrap.querySelector('.purpose-title');
+          if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
           requestAnimationFrame(() => {
-            if(projectStrategyWrap) projectStrategyWrap.scrollTop = 0;
+            if(projectStrategyWrap) {
+              projectStrategyWrap.scrollTop = 0;
+              if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+            }
           });
         }
       }, 400);
@@ -1059,11 +1115,16 @@ window.addEventListener('unhandledrejection', (e) => {
     if(currentMode === 'artist' && artistWrap){
       setTimeout(() => {
         setupPurposeScrollAnimations(artistWrap);
-        // Ensure scroll is at top after animation setup
+        // Ensure scroll is at top and title is visible after animation setup
         if(artistWrap) {
           artistWrap.scrollTop = 0;
+          const title = artistWrap.querySelector('.purpose-title');
+          if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
           requestAnimationFrame(() => {
-            if(artistWrap) artistWrap.scrollTop = 0;
+            if(artistWrap) {
+              artistWrap.scrollTop = 0;
+              if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+            }
           });
         }
       }, 400);
@@ -1073,11 +1134,16 @@ window.addEventListener('unhandledrejection', (e) => {
     if(currentMode === 'levels' && levelsWrap){
       setTimeout(() => {
         setupLevelsScrollAnimations();
-        // Ensure scroll is at top after animation setup
+        // Ensure scroll is at top and title is visible after animation setup
         if(levelsWrap) {
           levelsWrap.scrollTop = 0;
+          const title = levelsWrap.querySelector('.purpose-title');
+          if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
           requestAnimationFrame(() => {
-            if(levelsWrap) levelsWrap.scrollTop = 0;
+            if(levelsWrap) {
+              levelsWrap.scrollTop = 0;
+              if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+            }
           });
         }
       }, 400);
@@ -1481,6 +1547,14 @@ window.addEventListener('unhandledrejection', (e) => {
               
               if(activeContent){
                 activeContent.scrollTop = 0;
+                const title = activeContent.querySelector('.purpose-title');
+                if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                requestAnimationFrame(() => {
+                  if(activeContent) {
+                    activeContent.scrollTop = 0;
+                    if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                  }
+                });
               }
               debugLog('XR_1_bg.html:prevBtn', 'After setting scrollTop in prevBtn callback', {
                 scrollTop:activeContent?activeContent.scrollTop:0
@@ -1502,11 +1576,19 @@ window.addEventListener('unhandledrejection', (e) => {
           setTimeout(() => {
             currentMode = targetMode;
             openPresent();
-            // Scroll to top after opening
+            // Scroll to top after opening and ensure title is visible
             setTimeout(() => {
               const activeContent = getActiveContent();
               if(activeContent){
                 activeContent.scrollTop = 0;
+                const title = activeContent.querySelector('.purpose-title');
+                if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                requestAnimationFrame(() => {
+                  if(activeContent) {
+                    activeContent.scrollTop = 0;
+                    if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                  }
+                });
               }
               window.scrollTo({ top: 0, behavior: 'auto' });
             }, 100);
@@ -1795,11 +1877,19 @@ window.addEventListener('unhandledrejection', (e) => {
           setTimeout(() => {
             currentMode = targetMode;
             openPresent();
-            // Scroll to top after opening
+            // Scroll to top after opening and ensure title is visible
             setTimeout(() => {
               const activeContent = getActiveContent();
               if(activeContent){
                 activeContent.scrollTop = 0;
+                const title = activeContent.querySelector('.purpose-title');
+                if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                requestAnimationFrame(() => {
+                  if(activeContent) {
+                    activeContent.scrollTop = 0;
+                    if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                  }
+                });
               }
               window.scrollTo({ top: 0, behavior: 'auto' });
             }, 100);
@@ -1818,11 +1908,19 @@ window.addEventListener('unhandledrejection', (e) => {
           setTimeout(() => {
             currentMode = targetMode;
             openPresent();
-            // Scroll to top after opening
+            // Scroll to top after opening and ensure title is visible
             setTimeout(() => {
               const activeContent = getActiveContent();
               if(activeContent){
                 activeContent.scrollTop = 0;
+                const title = activeContent.querySelector('.purpose-title');
+                if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                requestAnimationFrame(() => {
+                  if(activeContent) {
+                    activeContent.scrollTop = 0;
+                    if(title) title.scrollIntoView({ behavior: 'auto', block: 'start', inline: 'nearest' });
+                  }
+                });
               }
               window.scrollTo({ top: 0, behavior: 'auto' });
             }, 100);
